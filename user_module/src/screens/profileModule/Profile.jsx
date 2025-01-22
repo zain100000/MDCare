@@ -19,10 +19,12 @@ import imgPlaceHolder from '../../assets/placeHolder/default_avatar.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../../utils/customComponents/customInputField/InputField';
 import ProfileScreenCard from '../../utils/customComponents/customCards/ProfileScreenCard';
-import LogoutModal from '../../utils/customModals/LogoutModal';
 import Geolocation from 'react-native-geolocation-service';
 import {updateLocation, toggleTracking} from '../../redux/slices/locationSlice'; // Import toggleTracking
+import {logoutUser} from '../../redux/slices/authSlice';
+
 import LinearGradient from 'react-native-linear-gradient';
+import CustomModal from '../../utils/customModals/CustomModal';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -31,11 +33,12 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const [photoURL, setPhotoURL] = useState('');
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const user = useSelector(state => state.auth.user);
 
-  const location = useSelector(state => state.location.location); // Get location from Redux
+  const location = useSelector(state => state.location.location);
   const isTracking = useSelector(state => state.location.isTracking);
 
   useEffect(() => {
@@ -52,8 +55,32 @@ const Profile = () => {
     }
   }, [user]);
 
-  const handleLogoutModal = () => {
-    setShowLogoutModal(true);
+  const handleLogout = async () => {
+    setLoading(true);
+
+    try {
+      const resultAction = await dispatch(logoutUser()).unwrap();
+
+      if (resultAction.success) {
+        setTimeout(() => {
+          setShowSuccessModal(true);
+
+          setTimeout(() => {
+            setShowSuccessModal(false);
+            navigation.replace('Signin');
+          }, 2000);
+        }, 2000);
+      } else {
+        console.error(
+          'Logout failed:',
+          resultAction.message || 'Unknown error.',
+        );
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleTracker = async () => {
@@ -213,18 +240,18 @@ const Profile = () => {
                 iconName="log-out-outline"
                 iconColor={theme.colors.primary}
                 rightIcon="chevron-forward"
-                onPressFunction={handleLogoutModal}
+                onPressFunction={handleLogout}
               />
             </View>
           </View>
         </ScrollView>
       </View>
 
-      <LogoutModal
-        visible={showLogoutModal}
-        onClose={() => setShowLogoutModal(false)}
-        title="Logout!"
-        description="Are Your Sure You Want To Logout ?"
+      <CustomModal
+        visible={showSuccessModal}
+        title="Logout Successfully!"
+        imageSource={require('../../assets/icons/success.png')}
+        onClose={() => setShowSuccessModal(false)}
       />
     </SafeAreaView>
   );

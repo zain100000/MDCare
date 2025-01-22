@@ -61,14 +61,14 @@ const Video = () => {
             <Ionicons
               name={'search'}
               size={width * 0.05}
-              color={theme.colors.white}
+              color={theme.colors.primary}
             />
           </View>
           <InputField
             placeholder="Search"
-            placeholderTextColor={theme.colors.white}
+            placeholderTextColor={theme.colors.primary}
+            backgroundColor={theme.colors.white}
             onChangeText={setSearchQuery}
-            backgroundColor="#D3915C"
           />
         </View>
       </View>

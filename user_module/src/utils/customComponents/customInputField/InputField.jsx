@@ -71,7 +71,7 @@ const InputField = ({
             globalStyles.input,
             {
               backgroundColor: backgroundColor || theme.colors.primary,
-              color: theme.colors.white,
+              color: theme.colors.primary,
               borderRadius: theme.borderRadius.large,
             },
             multiline && {height: 100},
