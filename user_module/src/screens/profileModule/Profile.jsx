@@ -166,7 +166,8 @@ const Profile = () => {
                 />
               </View>
               <InputField
-                value={
+                value={location}
+                placeholder={
                   location || (isTracking ? 'Tracker Is On' : 'Tracker Is Off')
                 }
                 placeholderTextColor={theme.colors.primary}
