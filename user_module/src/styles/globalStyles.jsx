@@ -10,13 +10,13 @@ export const globalStyles = StyleSheet.create({
 
   textPrimary: {
     color: theme.colors.primary,
-    fontFamily: theme.typography.fontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilyRegular,
     fontSize: theme.typography.fontSize.md,
   },
 
   textSecondary: {
     color: theme.colors.secondary,
-    fontFamily: theme.typography.fontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilyRegular,
     fontSize: theme.typography.fontSize.sm,
   },
 
@@ -28,7 +28,7 @@ export const globalStyles = StyleSheet.create({
 
   textBlack: {
     color: theme.colors.black,
-    fontFamily: theme.typography.fontFamilySemiBold,
+    fontFamily: theme.typography.RobotofontFamilySemiBold,
     fontSize: theme.typography.fontSize.md,
   },
 
@@ -46,18 +46,10 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  buttonSecondary: {
-    backgroundColor: theme.colors.secondary,
-    paddingVertical: theme.spacing(2),
-    paddingHorizontal: theme.spacing(4),
-    borderRadius: theme.borderRadius.medium,
-    alignItems: 'center',
-  },
-
   buttonText: {
     color: theme.colors.white,
     fontSize: theme.typography.fontSize.lg,
-    fontFamily: theme.typography.fontFamilyMedium,
+    fontFamily: theme.typography.PoppinsfontFamilySemiBold,
     top: 2,
   },
 
@@ -68,7 +60,7 @@ export const globalStyles = StyleSheet.create({
   input: {
     backgroundColor: theme.colors.white,
     borderWidth: 3,
-    borderColor: theme.colors.primary,
+    borderColor: theme.colors.white,
     borderRadius: theme.borderRadius.medium,
     paddingVertical: theme.spacing(1.5),
     paddingHorizontal: theme.spacing(4.5),
@@ -78,7 +70,7 @@ export const globalStyles = StyleSheet.create({
   },
 
   inputLabel: {
-    fontFamily: theme.typography.fontFamilyMedium,
+    fontFamily: theme.typography.MontserratfontFamilyMedium,
     fontSize: theme.typography.fontSize.md,
     color: theme.colors.black,
   },

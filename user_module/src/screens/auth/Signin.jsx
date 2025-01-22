@@ -34,9 +34,7 @@ const Signin = () => {
   const [password, setPassword] = useState('');
   const [hidePassword, setHidePassword] = useState(false);
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [emailError, setEmailError] = useState('');
@@ -64,7 +62,6 @@ const Signin = () => {
   const handleLogin = async () => {
     if (isValidInput(email, password)) {
       setLoading(true);
-      setShowAuthModal(true);
 
       const loginData = {
         email,
@@ -76,7 +73,6 @@ const Signin = () => {
 
         if (loginUser.fulfilled.match(resultAction)) {
           const {user} = resultAction.payload;
-          setShowAuthModal(false);
           setShowSuccessModal(true);
 
           setTimeout(() => {
@@ -89,29 +85,14 @@ const Signin = () => {
               ? resultAction.payload.error || 'Login failed. Please try again.'
               : 'Unexpected response from server.';
 
-          setShowAuthModal(false);
           setLoading(false);
           console.error(errorMessage);
-
-          setShowErrorModal(true);
-
-          setTimeout(() => {
-            setShowErrorModal(false);
-          }, 3000);
         }
       } catch (err) {
         console.error('An error occurred during login:', err);
-        setShowAuthModal(false);
         setLoading(false);
-
-        setShowErrorModal(true);
-
-        setTimeout(() => {
-          setShowErrorModal(false);
-        }, 3000);
       } finally {
         setLoading(false);
-        setShowAuthModal(false);
       }
     }
   };
@@ -138,14 +119,15 @@ const Signin = () => {
                   <Ionicons
                     name={'mail'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={email}
                   onChangeText={handleEmailChange}
                   placeholder="Enter Email"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                 />
                 {emailError ? (
                   <Text style={[globalStyles.textError, styles.errorText]}>
@@ -160,14 +142,15 @@ const Signin = () => {
                   <Ionicons
                     name={'lock-closed'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={password}
                   onChangeText={handlePasswordChange}
                   placeholder="Enter Password"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                   secureTextEntry={hidePassword}
                 />
                 <TouchableOpacity
@@ -176,7 +159,7 @@ const Signin = () => {
                   <Ionicons
                     name={hidePassword ? 'eye-off' : 'eye'}
                     size={width * 0.06}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </TouchableOpacity>
                 {passwordError ? (
@@ -190,8 +173,7 @@ const Signin = () => {
               <View style={styles.extraContainer}>
                 <TouchableOpacity
                   onPress={() => navigation.navigate('Forgot_Password')}>
-                  <Text
-                    style={[globalStyles.textBlack, globalStyles.extraText]}>
+                  <Text style={[globalStyles.textBlack, styles.extraText]}>
                     Forgot Password?
                   </Text>
                 </TouchableOpacity>
@@ -228,27 +210,10 @@ const Signin = () => {
       </View>
 
       <CustomModal
-        visible={showAuthModal}
-        title="Working!"
-        description="Please wait while log into your account."
-        animationSource={require('../../assets/animations/email.json')}
-        onClose={() => setShowAuthModal(false)}
-      />
-
-      <CustomModal
         visible={showSuccessModal}
-        title="Success!"
-        description="Login successfully"
-        animationSource={require('../../assets/animations/success.json')}
+        title="Login Successfully!"
+        imageSource={require('../../assets/icons/success.png')}
         onClose={() => setShowSuccessModal(false)}
-      />
-
-      <CustomModal
-        visible={showErrorModal}
-        title="Failure!"
-        description="Failed to login"
-        animationSource={require('../../assets/animations/error.json')}
-        onClose={() => setShowErrorModal(false)}
       />
     </SafeAreaView>
   );
@@ -289,7 +254,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     position: 'absolute',
     left: width * 0.02,
-    transform: [{translateY: width * 0.14}],
+    transform: [{translateY: width * 0.134}],
     zIndex: 8,
   },
 
@@ -304,6 +269,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
 
+  extraText: {
+    fontSize: width * 0.044,
+    fontFamily: theme.typography.PoppinsfontFamilyMedium,
+  },
+
   signupContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -312,7 +282,8 @@ const styles = StyleSheet.create({
   },
 
   textPrimary: {
-    fontFamily: theme.typography.fontFamilySemiBold,
+    fontFamily: theme.typography.RobotofontFamilyMedium,
+    fontSize: width * 0.044,
   },
 
   errorText: {
@@ -320,7 +291,7 @@ const styles = StyleSheet.create({
     bottom: -height * 0.014,
     paddingHorizontal: width * 0.014,
     fontSize: width * 0.034,
-    fontFamily: theme.typography.fontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilyRegular,
   },
 
   passwordErrorText: {
@@ -328,6 +299,6 @@ const styles = StyleSheet.create({
     bottom: height * 0.014,
     paddingHorizontal: width * 0.014,
     fontSize: width * 0.034,
-    fontFamily: theme.typography.fontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilyRegular,
   },
 });

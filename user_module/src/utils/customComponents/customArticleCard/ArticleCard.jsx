@@ -18,6 +18,8 @@ const ArticleCard = ({title, content, imageSource, onPress}) => {
     <SafeAreaView style={[globalStyles.container, styles.primaryContainer]}>
       <LinearGradient
         colors={['#AE9352', '#88835B']}
+        start={{x: 0.5, y: 0}}
+        end={{x: 0.5, y: 1}}
         style={styles.contentContainer}>
         <View style={styles.imgContainer}>
           <Image source={imageSource} style={styles.image} />

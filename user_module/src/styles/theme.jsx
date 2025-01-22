@@ -1,7 +1,7 @@
 export const theme = {
   colors: {
-    primary: '#07BBC6',    
-    secondary: '#035B60',    
+    primary: '#07BBC6',
+    secondary: '#035B60',
     white: '#FFFFFF',
     black: '#000',
     error: '#Ff0000',
@@ -13,10 +13,21 @@ export const theme = {
   },
 
   typography: {
-    fontFamilyBold: 'Poppins-Bold',
-    fontFamilyMedium: 'Poppins-Medium',
-    fontFamilyRegular: 'Poppins-Regular',
-    fontFamilySemiBold: 'Poppins-SemiBold',
+    PoppinsfontFamilyBold: 'Poppins-Bold',
+    PoppinsfontFamilyMedium: 'Poppins-Medium',
+    PoppinsfontFamilyRegular: 'Poppins-Regular',
+    PoppinsfontFamilySemiBold: 'Poppins-SemiBold',
+
+    MontserratfontFamilyBold: 'Montserrat-Bold',
+    MontserratfontFamilyMedium: 'Montserrat-Medium',
+    MontserratfontFamilyRegular: 'Montserrat-Regular',
+    MontserratfontFamilySemiBold: 'Montserrat-SemiBold',
+
+    RobotofontFamilyBold: 'Roboto-Bold',
+    RobotofontFamilyMedium: 'Roboto-Medium',
+    RobotofontFamilyRegular: 'Roboto-Regular',
+    RobotofontFamilySemiBold: 'Roboto-SemiBold',
+
     fontSize: {
       xs: 12,
       sm: 14,

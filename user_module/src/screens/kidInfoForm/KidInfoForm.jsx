@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -18,7 +18,7 @@ import Button from '../../utils/customComponents/customButton/Button';
 
 const {width, height} = Dimensions.get('screen');
 
-const Signup = () => {
+const KidInfoForm = () => {
   const navigation = useNavigation();
 
   const [name, setName] = useState('');
@@ -52,14 +52,15 @@ const Signup = () => {
                   <Ionicons
                     name={'person'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={name}
                   onChangeText={setName}
                   placeholder="Enter Kid Name"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                 />
               </View>
 
@@ -69,14 +70,15 @@ const Signup = () => {
                   <Ionicons
                     name={'calendar'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={age}
                   onChangeText={setAge}
                   placeholder="Enter Kid Age"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                 />
               </View>
 
@@ -86,14 +88,16 @@ const Signup = () => {
                   <Ionicons
                     name={'male'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   dropdownOptions={genderOptions}
                   selectedValue={gender}
                   onValueChange={setGender}
-                  placeholder="Select Gender"
+                  placeholder={'Select Gender'}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                 />
               </View>
 
@@ -103,14 +107,15 @@ const Signup = () => {
                   <Ionicons
                     name={'trophy'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={speciality}
                   onChangeText={setSpeciality}
                   placeholder="Enter Kid Speciality"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                 />
               </View>
 
@@ -131,7 +136,7 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default KidInfoForm;
 
 const styles = StyleSheet.create({
   primaryContainer: {
@@ -162,7 +167,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     position: 'absolute',
     left: width * 0.02,
-    transform: [{translateY: width * 0.14}],
+    transform: [{translateY: width * 0.134}],
     zIndex: 8,
   },
 

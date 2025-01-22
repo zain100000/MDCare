@@ -40,9 +40,7 @@ const Signup = () => {
   const [hidePassword, setHidePassword] = useState(false);
   const [hidePassword1, setHidePassword1] = useState(false);
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [nameError, setNameError] = useState('');
@@ -86,7 +84,6 @@ const Signup = () => {
   const handleRegister = async () => {
     if (isValidInput(name, email, password, confirmPassword)) {
       setLoading(true);
-      setShowAuthModal(true);
 
       const userData = {
         fullname: name,
@@ -105,7 +102,6 @@ const Signup = () => {
           const {user} = resultAction.payload;
           console.log('USERSSSS', user);
 
-          setShowAuthModal(false);
           setShowSuccessModal(true);
 
           setTimeout(() => {
@@ -119,27 +115,13 @@ const Signup = () => {
                 'An error occurred. Please try again.'
               : 'Unexpected response from server.';
 
-          setShowAuthModal(false);
           setLoading(false);
           console.error('Error:', errorMessage);
-
-          setShowErrorModal(true);
-
-          setTimeout(() => {
-            setShowErrorModal(false);
-          }, 3000);
         }
       } catch (err) {
         console.error('Unexpected Error:', err);
         alert('An unexpected error occurred. Please try again.');
-        setShowAuthModal(false);
         setLoading(false);
-
-        setShowErrorModal(true);
-
-        setTimeout(() => {
-          setShowErrorModal(false);
-        }, 3000);
       } finally {
         setLoading(false);
       }
@@ -168,14 +150,15 @@ const Signup = () => {
                   <Ionicons
                     name={'person'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={name}
                   onChangeText={handleNameChange}
                   placeholder="Enter Name"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                 />
                 {nameError ? (
                   <Text style={[globalStyles.textError, styles.errorText]}>
@@ -190,14 +173,15 @@ const Signup = () => {
                   <Ionicons
                     name={'mail'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={email}
                   onChangeText={handleEmailChange}
                   placeholder="Enter Email"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                 />
                 {emailError ? (
                   <Text style={[globalStyles.textError, styles.errorText]}>
@@ -212,14 +196,15 @@ const Signup = () => {
                   <Ionicons
                     name={'lock-closed'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={password}
                   onChangeText={handlePasswordChange}
                   placeholder="Enter Password"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                   secureTextEntry={hidePassword}
                 />
                 <TouchableOpacity
@@ -245,14 +230,15 @@ const Signup = () => {
                   <Ionicons
                     name={'lock-closed'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={confirmPassword}
                   onChangeText={handleConfirmPasswordChange}
                   placeholder="Enter Confirm Password"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                   secureTextEntry={hidePassword1}
                 />
                 <TouchableOpacity
@@ -261,7 +247,7 @@ const Signup = () => {
                   <Ionicons
                     name={hidePassword1 ? 'eye-off' : 'eye'}
                     size={width * 0.06}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </TouchableOpacity>
                 {confirmPasswordError ? (
@@ -303,27 +289,10 @@ const Signup = () => {
       </View>
 
       <CustomModal
-        visible={showAuthModal}
-        title="Working!"
-        description="Please Wait While Creating Your Account."
-        animationSource={require('../../assets/animations/email.json')}
-        onClose={() => setShowAuthModal(false)}
-      />
-
-      <CustomModal
         visible={showSuccessModal}
-        title="Success!"
-        description="Your Account Has Been Created Successfully"
-        animationSource={require('../../assets/animations/success.json')}
+        title="Login Successfully!"
+        imageSource={require('../../assets/icons/success.png')}
         onClose={() => setShowSuccessModal(false)}
-      />
-
-      <CustomModal
-        visible={showErrorModal}
-        title="Failure!"
-        description="Failed to signup!"
-        animationSource={require('../../assets/animations/error.json')}
-        onClose={() => setShowErrorModal(false)}
       />
     </SafeAreaView>
   );
@@ -364,7 +333,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     position: 'absolute',
     left: width * 0.02,
-    transform: [{translateY: width * 0.14}],
+    transform: [{translateY: width * 0.134}],
     zIndex: 8,
   },
 
@@ -382,11 +351,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: width * 0.9,
-    marginTop: height * 0.065,
+    marginTop: height * 0.045,
+    marginBottom: height * 0.02,
   },
 
   textPrimary: {
-    fontFamily: theme.typography.fontFamilySemiBold,
+    fontFamily: theme.typography.RobotofontFamilyMedium,
+    fontSize: width * 0.044,
   },
 
   errorText: {
@@ -394,7 +365,7 @@ const styles = StyleSheet.create({
     bottom: -height * 0.014,
     paddingHorizontal: width * 0.014,
     fontSize: width * 0.034,
-    fontFamily: theme.typography.fontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilyRegular,
   },
 
   passwordErrorText: {
@@ -402,6 +373,6 @@ const styles = StyleSheet.create({
     bottom: height * 0.014,
     paddingHorizontal: width * 0.014,
     fontSize: width * 0.034,
-    fontFamily: theme.typography.fontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilyRegular,
   },
 });

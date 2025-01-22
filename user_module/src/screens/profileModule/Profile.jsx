@@ -22,6 +22,7 @@ import ProfileScreenCard from '../../utils/customComponents/customCards/ProfileS
 import LogoutModal from '../../utils/customModals/LogoutModal';
 import Geolocation from 'react-native-geolocation-service';
 import {updateLocation, toggleTracking} from '../../redux/slices/locationSlice'; // Import toggleTracking
+import LinearGradient from 'react-native-linear-gradient';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -112,8 +113,21 @@ const Profile = () => {
           </View>
 
           <View style={styles.infoDetailContainer}>
-            <TouchableOpacity style={styles.rightContainer}>
-              <Text style={styles.rightLabel}>Edit Profile</Text>
+            <TouchableOpacity style={styles.rightContainer} activeOpacity={0.9}>
+              <LinearGradient
+                colors={[theme.colors.primary, theme.colors.secondary]}
+                start={{x: 0.5, y: 0}}
+                end={{x: 0.5, y: 1}}
+                style={styles.linearGradient}>
+                <Text style={styles.rightLabel}>Edit Profile</Text>
+                <View style={styles.plusiconContainer}>
+                  <Ionicons
+                    name="add-circle"
+                    size={width * 0.06}
+                    color={theme.colors.white}
+                  />
+                </View>
+              </LinearGradient>
             </TouchableOpacity>
           </View>
 
@@ -135,7 +149,8 @@ const Profile = () => {
               </View>
               <InputField
                 value={user?.phone}
-                placeholderTextColor={theme.colors.white}
+                placeholder={'Phone'}
+                placeholderTextColor={theme.colors.primary}
                 backgroundColor={theme.colors.white}
                 editable={false}
               />
@@ -143,6 +158,13 @@ const Profile = () => {
 
             <View style={styles.locationContainer}>
               <Text style={[globalStyles.inputLabel]}>Track Your Child</Text>
+              <View style={styles.iconContainer}>
+                <Ionicons
+                  name={'map'}
+                  size={width * 0.05}
+                  color={theme.colors.primary}
+                />
+              </View>
               <InputField
                 value={
                   location || (isTracking ? 'Tracker Is On' : 'Tracker Is Off')
@@ -172,6 +194,7 @@ const Profile = () => {
             </View>
 
             <TouchableOpacity
+              activeOpacity={0.9}
               style={styles.plusIconContainer}
               onPress={() => navigation.navigate('Kid_Info_Form')}>
               <Ionicons
@@ -287,19 +310,28 @@ const styles = StyleSheet.create({
   },
 
   rightContainer: {
-    backgroundColor: theme.colors.primary,
     marginRight: width * 0.04,
-    marginTop: height * 0.01,
+    borderRadius: theme.borderRadius.large,
+  },
+
+  linearGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.06,
+    paddingVertical: height * 0.02,
     borderRadius: theme.borderRadius.large,
   },
 
   rightLabel: {
-    marginTop: height * 0.01,
-    paddingHorizontal: width * 0.06,
-    paddingVertical: height * 0.009,
     fontSize: width * 0.04,
-    fontFamily: theme.typography.fontFamilySemiBold,
+    fontFamily: theme.typography.MontserratfontFamilySemiBold,
     color: theme.colors.white,
+  },
+
+  plusiconContainer: {
+    left: width * 0.02,
+    borderRadius: theme.borderRadius.large,
   },
 
   profileCards: {

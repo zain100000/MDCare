@@ -28,8 +28,8 @@ const BottomNavigator = () => {
           <LinearGradient
             colors={[theme.colors.primary, theme.colors.secondary]}
             style={styles.tabBarBackground}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
+            start={{x: 0.5, y: 0}}
+            end={{x: 0.5, y: 1}}
           />
         ),
       }}>

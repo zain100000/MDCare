@@ -5,7 +5,6 @@ import {
   Dimensions,
   SafeAreaView,
   FlatList,
-  Text,
 } from 'react-native';
 import {theme} from '../../styles/theme';
 import {globalStyles} from '../../styles/globalStyles';
@@ -14,38 +13,36 @@ import SecondaryHeader from '../../utils/customComponents/customHeaders/Secondar
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../../utils/customComponents/customInputField/InputField';
 import {useDispatch, useSelector} from 'react-redux';
-import {getWaitinglist} from '../../redux/slices/waitinglistSlice';
-import SchoolCard from '../../utils/customComponents/customSchoolCard/SchoolCard';
+import {getVideos} from '../../redux/slices/videoSlice';
+import VideoCard from '../../utils/customComponents/customVideoCard/VideoCard';
 
 const {width, height} = Dimensions.get('screen');
 
-const School = () => {
+const Video = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const waitinglist = useSelector(state => state.waitinglist.waitinglist);
+  const {videos} = useSelector(state => state.video);
 
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    dispatch(getWaitinglist());
+    dispatch(getVideos());
   }, [dispatch]);
 
   useEffect(() => {
-    console.log('Fetched Schools:', waitinglist);
-  }, [waitinglist]);
+    console.log('Fetched Videos:', videos);
+  }, [videos]);
 
-  const filteredSchools = (waitinglist || []).filter(item =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredVideos = videos.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const renderSchool = ({item}) => (
-    <SchoolCard
-      name={item.name}
+  const renderVideo = ({item}) => (
+    <VideoCard
+      title={item.title}
       description={item.description}
-      imageSource={{
-        uri: 'https://th.bing.com/th/id/OIP.aEvPkBFdKytOiJj-gZV-CQHaEK?rs=1&pid=ImgDetMain',
-      }}
+      videoUrl={item.link}
     />
   );
 
@@ -53,10 +50,10 @@ const School = () => {
     <SafeAreaView style={[globalStyles.container, styles.primaryContainer]}>
       <View style={styles.headerContainer}>
         <SecondaryHeader
-          headerTitle="FIND A SCHOOL"
-          headerSubtitle="Find your perfect school"
-          titleColor="#07BBC6"
-          subtitleColor="#035B60"
+          headerTitle="STUDY VIDEOS"
+          headerSubtitle="Watch, discover and connect"
+          titleColor="#A56E41"
+          subtitleColor="#D3915C"
         />
 
         <View style={styles.searchContainer}>
@@ -71,23 +68,24 @@ const School = () => {
             placeholder="Search"
             placeholderTextColor={theme.colors.white}
             onChangeText={setSearchQuery}
+            backgroundColor="#D3915C"
           />
         </View>
       </View>
 
       <View style={styles.secondaryContainer}>
         <FlatList
-          data={filteredSchools}
-          renderItem={renderSchool}
-          keyExtractor={item => item._id.toString()}
-          contentContainerStyle={{paddingBottom: height * 0.02}}
+          data={filteredVideos}
+          renderItem={renderVideo}
+          keyExtractor={item => item._id}
+          contentContainerStyle={{paddingBottom: height * 0.26}}
         />
       </View>
     </SafeAreaView>
   );
 };
 
-export default School;
+export default Video;
 
 const styles = StyleSheet.create({
   primaryContainer: {
@@ -96,8 +94,7 @@ const styles = StyleSheet.create({
   },
 
   secondaryContainer: {
-    flex: 1,
-    marginTop: height * 0.04,
+    marginTop: height * 0.02,
   },
 
   searchContainer: {

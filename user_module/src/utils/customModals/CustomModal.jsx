@@ -6,8 +6,8 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import LottieView from 'lottie-react-native';
 import {theme} from '../../styles/theme';
 import {globalStyles} from '../../styles/globalStyles';
 
@@ -18,7 +18,7 @@ const CustomModal = ({
   onClose,
   title,
   description,
-  animationSource,
+  imageSource,
   primaryButtonText,
   onPrimaryButtonPress,
   secondaryButtonText,
@@ -32,22 +32,16 @@ const CustomModal = ({
       onRequestClose={onClose}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          {animationSource && (
-            <LottieView
-              source={animationSource}
-              autoPlay
-              loop
-              style={styles.animation}
+          {imageSource && (
+            <Image
+              source={imageSource}
+              style={styles.image}
+              resizeMode="contain"
             />
           )}
           {title && (
             <Text style={[globalStyles.textBlack, styles.modalText]}>
               {title}
-            </Text>
-          )}
-          {description && (
-            <Text style={[globalStyles.textBlack, styles.descriptionText]}>
-              {description}
             </Text>
           )}
           <View style={styles.buttonContainer}>
@@ -101,26 +95,21 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: width * 0.92,
-    height: height * 0.48,
+    height: height * 0.2,
   },
 
-  animation: {
-    width: width * 0.5,
-    height: width * 0.5,
+  image: {
+    width: width * 0.2,
+    height: width * 0.2,
     marginBottom: 15,
   },
 
   modalText: {
-    marginBottom: 15,
+    marginBottom: height * 0.02,
     textAlign: 'center',
     fontSize: width * 0.05,
-    color: theme.colors.dark,
-  },
-
-  descriptionText: {
-    textAlign: 'center',
-    color: theme.colors.dark,
-    fontSize: width * 0.04,
+    color: theme.colors.primary,
+    fontFamily: theme.typography.RobotofontFamilySemiBold,
   },
 
   buttonContainer: {

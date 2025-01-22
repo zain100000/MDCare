@@ -61,8 +61,28 @@ const OnBoarding = () => {
         </View>
         <View style={styles.textContainer}>
           <Text style={[globalStyles.textBlack, styles.title]}>
-            <Text style={{color: theme.colors.primary}}>{words[0]} </Text>
-            {words.slice(1).join(' ')}
+            {/* Highlight specific words */}
+            {words.map((word, i) => {
+              if (
+                word === 'Connecting' ||
+                word === 'Inspiring' ||
+                word === 'Support,' ||
+                word === 'Growth,' ||
+                word === 'Community'
+              ) {
+                return (
+                  <Text
+                    key={i}
+                    style={{
+                      color: theme.colors.primary,
+                      fontFamily: theme.typography.fontFamilyBold,
+                    }}>
+                    {word}{' '}
+                  </Text>
+                );
+              }
+              return word + ' ';
+            })}
           </Text>
         </View>
 
@@ -76,14 +96,12 @@ const OnBoarding = () => {
               textColor={theme.colors.white}
             />
           ) : (
-            <>
-              <Button
-                title="Next"
-                width={390}
-                onPress={goToNextSlide}
-                textColor={theme.colors.white}
-              />
-            </>
+            <Button
+              title="Next"
+              width={390}
+              onPress={goToNextSlide}
+              textColor={theme.colors.white}
+            />
           )}
         </View>
       </SafeAreaView>
@@ -153,14 +171,15 @@ const styles = StyleSheet.create({
   },
 
   textContainer: {
-    marginTop: height * 0.1,
+    marginTop: height * 0.06,
     alignItems: 'center',
   },
 
   title: {
     fontSize: width * 0.062,
-    fontFamily: theme.typography.fontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilyRegular,
     textAlign: 'center',
+    width: width * 0.8,
   },
 
   btnContainer: {

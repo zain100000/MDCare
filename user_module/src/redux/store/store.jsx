@@ -8,11 +8,12 @@ import articleReducer from '../slices/articleSlice';
 import waitinglistReducer from '../slices/waitinglistSlice';
 import waitinglistConsultantReducer from '../slices/waitinglistConsultantSlice';
 import locationReducer from '../slices/locationSlice';
+import videoReducer from '../slices/videoSlice';
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth'],
+  whitelist: ['auth', 'location'],
 };
 
 const rootReducer = combineReducers({
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   waitinglist: waitinglistReducer,
   waitinglistconsultant: waitinglistConsultantReducer,
   location: locationReducer,
+  video: videoReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

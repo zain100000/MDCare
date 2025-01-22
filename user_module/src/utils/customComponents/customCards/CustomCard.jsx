@@ -50,6 +50,8 @@ const CustomCard = ({title, iconSource, gradientColors, onPress}) => {
           colors={
             gradientColors || [theme.colors.primary, theme.colors.secondary]
           }
+          start={{x: 0.5, y: 0}}
+          end={{x: 0.5, y: 1}}
           style={styles.gradientBackground}>
           <View style={styles.contentContainer}>
             <Text style={[styles.title, {color: theme.colors.white}]}>

@@ -37,15 +37,16 @@ const styles = StyleSheet.create({
   },
 
   headerTitleText: {
-    fontSize: width * 0.09,
+    fontSize: width * 0.08,
     color: theme.colors.primary,
-    fontFamily: theme.typography.fontFamilyMedium,
+    fontFamily: theme.typography.MontserratfontFamilyBold,
   },
 
   headerSubtitleText: {
     fontSize: width * 0.04,
     color: theme.colors.primary,
-    fontFamily: theme.typography.fontFamilyMedium,
+    fontFamily: theme.typography.MontserratfontFamilyMedium,
+
     textTransform: 'uppercase',
     letterSpacing: width * 0.01,
     marginTop: -height * 0.01,

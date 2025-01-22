@@ -26,7 +26,7 @@ const HomeHeader = ({imageSource, headerTitle, headerSubtitle, onPress}) => {
         </View>
 
         <View style={styles.rightContainer}>
-          <TouchableOpacity onPress={onPress}>
+          <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
             <Image
               source={imageSource}
               style={styles.image}

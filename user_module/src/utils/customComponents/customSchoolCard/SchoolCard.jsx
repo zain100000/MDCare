@@ -21,6 +21,8 @@ const SchoolCard = ({name, description, imageSource, onPress}) => {
       style={[globalStyles.container, styles.primaryContainer]}>
       <LinearGradient
         colors={['#07BBC6', '#035B60']}
+        start={{x: 0.5, y: 0}}
+        end={{x: 0.5, y: 1}}
         style={styles.contentContainer}>
         <View style={styles.imgContainer}>
           <Image source={imageSource} style={styles.image} />

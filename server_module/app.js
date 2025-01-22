@@ -6,8 +6,9 @@ require("./models/db");
 const userRouter = require("./routes/user");
 const schoolRouter = require("./routes/school");
 const articleRouter = require("./routes/article");
-// const schoolRoutes = require('./routes/school');
 const consultantRoutes = require("./routes/consultant");
+const videoRoutes = require("./routes/video");
+// const schoolRoutes = require('./routes/school');
 // const articleRoutes = require('./routes/article');
 
 const app = express();
@@ -19,6 +20,7 @@ app.use("/api/auth", userRouter);
 app.use("/api/school", schoolRouter);
 app.use("/api/article", articleRouter);
 app.use("/api/consultant", consultantRoutes);
+app.use("/api/video", videoRoutes);
 
 // Register routes with proper prefixes
 // app.use('/api/v1', userRouter); // Add `/api/v1` prefix for user routes

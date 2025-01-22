@@ -57,14 +57,15 @@ const ForgotPassword = () => {
                   <Ionicons
                     name={'mail'}
                     size={width * 0.05}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </View>
                 <InputField
                   value={email}
                   onChangeText={handleEmailChange}
                   placeholder="Enter Email"
-                  placeholderTextColor={theme.colors.white}
+                  placeholderTextColor={theme.colors.primary}
+                  backgroundColor={theme.colors.white}
                 />
                 {emailError ? (
                   <Text style={[globalStyles.textError, styles.errorText]}>
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     position: 'absolute',
     left: width * 0.02,
-    transform: [{translateY: width * 0.14}],
+    transform: [{translateY: width * 0.134}],
     zIndex: 8,
   },
 
@@ -130,6 +131,6 @@ const styles = StyleSheet.create({
     bottom: -height * 0.014,
     paddingHorizontal: width * 0.014,
     fontSize: width * 0.034,
-    fontFamily: theme.typography.fontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilyRegular,
   },
 });

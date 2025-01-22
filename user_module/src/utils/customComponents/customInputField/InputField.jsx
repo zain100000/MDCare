@@ -45,7 +45,7 @@ const InputField = ({
           style={[
             globalStyles.input,
             {
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.white,
               color: theme.colors.white,
               borderRadius: theme.borderRadius.large,
             },

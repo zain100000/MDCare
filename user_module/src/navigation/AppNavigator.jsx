@@ -18,6 +18,7 @@ import Articles from '../screens/articlesModule/Articles';
 import School from '../screens/schoolModule/School';
 import Consultant from '../screens/consultantModule/Consultant';
 import Profile from '../screens/profileModule/Profile';
+import Video from '../screens/videoModule/Video';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,7 +44,7 @@ const AppNavigator = () => {
         <Stack.Screen name="School" component={School} />
         <Stack.Screen name="Consultant" component={Consultant} />
         <Stack.Screen name="Articles" component={Articles} />
-        {/* <Stack.Screen name="Videos" component={BottomNavigator} /> */}
+        <Stack.Screen name="Videos" component={Video} />
         {/* <Stack.Screen name="Games" component={BottomNavigator} /> */}
         <Stack.Screen name="Kid_Info_Form" component={KidInfoForm} />
       </Stack.Navigator>
