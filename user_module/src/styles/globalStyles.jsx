@@ -60,7 +60,7 @@ export const globalStyles = StyleSheet.create({
   input: {
     backgroundColor: theme.colors.white,
     borderWidth: 3,
-    borderColor: theme.colors.white,
+    borderColor: theme.colors.gray,
     borderRadius: theme.borderRadius.medium,
     paddingVertical: theme.spacing(1.5),
     paddingHorizontal: theme.spacing(4.5),
