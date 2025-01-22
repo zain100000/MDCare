@@ -290,7 +290,7 @@ const Signup = () => {
 
       <CustomModal
         visible={showSuccessModal}
-        title="Login Successfully!"
+        title="Register Successfully!"
         imageSource={require('../../assets/icons/success.png')}
         onClose={() => setShowSuccessModal(false)}
       />
