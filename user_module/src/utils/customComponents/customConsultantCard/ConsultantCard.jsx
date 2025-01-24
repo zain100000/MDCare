@@ -19,7 +19,7 @@ const ConsultantCard = ({name, bio, imageSource, onPress}) => {
       activeOpacity={0.9}
       style={[globalStyles.container, styles.primaryContainer]}>
       <LinearGradient
-        colors={['#07BBC6', '#035B60']}
+        colors={['#238579', '#144E47']}
         start={{x: 0.5, y: 0}}
         end={{x: 0.5, y: 1}}
         style={styles.contentContainer}>
@@ -39,7 +39,7 @@ export default ConsultantCard;
 
 const styles = StyleSheet.create({
   primaryContainer: {
-    padding: height * 0.012,
+    padding: height * 0.006,
     width: width * 1,
   },
 
@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     height: height * 0.14,
     resizeMode: 'cover',
     borderTopLeftRadius: theme.borderRadius.large,
+    borderBottomLeftRadius: theme.borderRadius.large,
   },
 
   textContainer: {

@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: height * 0.02,
     borderRadius: theme.borderRadius.large,
-    borderTopLeftRadius: 0,
+    borderTopLeftRadius: theme.borderRadius.large,
     position: 'relative',
   },
 
@@ -63,14 +63,14 @@ const styles = StyleSheet.create({
   imgContainer: {
     position: 'absolute',
     marginTop: -height * 0.02,
-    left: -width * 0.02,
+    left: -width * 0.04,
     zIndex: 2,
   },
 
   image: {
-    width: width * 0.18,
-    height: width * 0.18,
-    borderRadius: (width * 0.3) / 2,
+    width: width * 0.2,
+    height: width * 0.2,
+    borderRadius: theme.borderRadius.circle,
     resizeMode: 'contain',
   },
 });

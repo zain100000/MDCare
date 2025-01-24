@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
 
   secondaryContainer: {
     flex: 1,
-    marginTop: height * 0.04,
+    marginTop: height * 0.01,
   },
 
   searchContainer: {

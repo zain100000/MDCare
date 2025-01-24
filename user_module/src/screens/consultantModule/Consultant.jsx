@@ -57,8 +57,8 @@ const Consultant = () => {
         <SecondaryHeader
           headerTitle="FIND A CONSULTANT"
           headerSubtitle="Find your perfect consultant"
-          titleColor="#07BBC6"
-          subtitleColor="#035B60"
+          titleColor="#238579"
+          subtitleColor="#144E47"
         />
 
         <View style={styles.searchContainer}>
@@ -66,13 +66,13 @@ const Consultant = () => {
             <Ionicons
               name={'search'}
               size={width * 0.05}
-              color={theme.colors.primary}
+              color={'#238579'}
             />
           </View>
           <InputField
             placeholder="Search"
-            placeholderTextColor={theme.colors.primary}
-            backgroundColor= {theme.colors.white}            
+            placeholderTextColor={'#238579'}
+            backgroundColor={theme.colors.white}
             onChangeText={setSearchQuery}
           />
         </View>
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
 
   secondaryContainer: {
     flex: 1,
-    marginTop: height * 0.04,
+    marginTop: height * 0.01,
   },
 
   searchContainer: {

@@ -58,15 +58,11 @@ const Video = () => {
 
         <View style={styles.searchContainer}>
           <View style={styles.iconContainer}>
-            <Ionicons
-              name={'search'}
-              size={width * 0.05}
-              color={theme.colors.primary}
-            />
+            <Ionicons name={'search'} size={width * 0.05} color={'#A56E41'} />
           </View>
           <InputField
             placeholder="Search"
-            placeholderTextColor={theme.colors.primary}
+            placeholderTextColor={'#A56E41'}
             backgroundColor={theme.colors.white}
             onChangeText={setSearchQuery}
           />
@@ -94,7 +90,7 @@ const styles = StyleSheet.create({
   },
 
   secondaryContainer: {
-    marginTop: height * 0.02,
+    marginTop: height * 0.01,
   },
 
   searchContainer: {

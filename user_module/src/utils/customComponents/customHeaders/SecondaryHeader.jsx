@@ -42,13 +42,13 @@ const styles = StyleSheet.create({
 
   headerTitleText: {
     fontSize: width * 0.08,
-    fontFamily: theme.typography.MontserratfontFamilyRegular,
+    fontFamily: theme.typography.MontserratfontFamilyBold,
     textAlign: 'center',
   },
 
   headerSubtitleText: {
-    fontSize: width * 0.03,
-    fontFamily: theme.typography.MontserratfontFamilyRegular,
+    fontSize: width * 0.034,
+    fontFamily: theme.typography.MontserratfontFamilySemiBold,
     textTransform: 'uppercase',
     letterSpacing: width * 0.01,
     textAlign: 'center',

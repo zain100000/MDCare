@@ -50,7 +50,7 @@ const VideoCard = ({title, videoUrl, description, onPress}) => {
         <View style={styles.cardContent}>
           <View style={styles.imageContainer}>
             <Image
-              source={require('../../../assets/placeHolder/default_avatar.png')}
+              source={require('../../../assets/placeHolder/img_placeholder.png')}
               style={styles.placeholderImage}
             />
           </View>
@@ -70,18 +70,18 @@ export default VideoCard;
 const styles = StyleSheet.create({
   primaryContainer: {
     padding: height * 0.02,
+    paddingHorizontal: width * 0.02,
   },
 
   descriptionContainer: {
-    padding: height * 0.02,
+    padding: height * 0.01,
     borderRadius: theme.borderRadius.large,
-    borderTopLeftRadius: 0,
     position: 'relative',
   },
 
   topContainer: {
     marginBottom: height * 0.02,
-    marginTop: -height * 0.0168,
+    marginTop: -height * 0.01,
   },
 
   imgContainer: {
@@ -89,17 +89,18 @@ const styles = StyleSheet.create({
   },
 
   dummyImage: {
-    width: width * 0.906,
+    width: width * 0.954,
     height: height * 0.24,
     resizeMode: 'cover',
-    right: width * 0.042,
-    borderRadius: theme.borderRadius.large,
+    right: width * 0.018,
+    borderTopLeftRadius: theme.borderRadius.large,
+    borderTopRightRadius: theme.borderRadius.large,
   },
 
   playButtonContainer: {
     position: 'absolute',
     top: width * 0.24,
-    left: width * 0.4,
+    left: width * 0.44,
     transform: [{translateX: -25}, {translateY: -25}],
     justifyContent: 'center',
     alignItems: 'center',
@@ -123,20 +124,19 @@ const styles = StyleSheet.create({
 
   textContainer: {
     flex: 1,
-    marginLeft: width * 0.04,
-    paddingRight: width * 0.02,
+    left: width * 0.024,
   },
 
   title: {
     fontSize: width * 0.04,
-    fontFamily: theme.typography.MontserratfontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilyBold,
     color: theme.colors.white,
     marginBottom: height * 0.01,
   },
 
   description: {
     fontSize: width * 0.036,
-    fontFamily: theme.typography.MontserratfontFamilyRegular,
+    fontFamily: theme.typography.RobotofontFamilySemiBold,
     color: theme.colors.white,
     marginBottom: height * 0.01,
   },
@@ -148,8 +148,8 @@ const styles = StyleSheet.create({
   },
 
   placeholderImage: {
-    width: width * 0.18,
-    height: width * 0.18,
+    width: width * 0.14,
+    height: width * 0.14,
     borderRadius: (width * 0.3) / 2,
     borderWidth: 2,
     borderColor: theme.colors.white,

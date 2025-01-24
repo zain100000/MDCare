@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 require("dotenv").config();
 require("./models/db");
 
@@ -15,6 +16,7 @@ const app = express();
 
 // Middleware to parse JSON
 app.use(express.json());
+app.use(cors());
 
 app.use("/api/auth", userRouter);
 app.use("/api/school", schoolRouter);

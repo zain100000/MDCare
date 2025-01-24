@@ -6,6 +6,7 @@ import {
   Image,
   SafeAreaView,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import {useNavigation} from '@react-navigation/native';
@@ -35,7 +36,7 @@ const OnBoarding = () => {
   const sliderRef = useRef(null);
 
   const handleOnComplete = () => {
-    navigation.replace('Signin');
+    navigation.replace('Signup');
   };
 
   const handleSlideChange = index => {
@@ -88,13 +89,30 @@ const OnBoarding = () => {
 
         <View style={styles.btnContainer}>
           {index === slides.length - 1 ? (
-            <Button
-              title="Get Started"
-              width={390}
-              onPress={handleOnComplete}
-              loading={false}
-              textColor={theme.colors.white}
-            />
+            <>
+              <Button
+                title="SIGN UP"
+                width={390}
+                onPress={handleOnComplete}
+                loading={false}
+                textColor={theme.colors.white}
+              />
+              <View style={styles.signinContainer}>
+                <View style={styles.leftContainer}>
+                  <Text style={[globalStyles.textBlack]}>
+                    Already have an account?
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.rightContainer}
+                  onPress={() => navigation.navigate('Signin')}>
+                  <Text style={[globalStyles.textPrimary, styles.textPrimary]}>
+                    Signin
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
           ) : (
             <Button
               title="Next"
@@ -182,9 +200,21 @@ const styles = StyleSheet.create({
     width: width * 0.8,
   },
 
+  signinContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: width * 0.9,
+    marginTop: height * 0.025,
+  },
+
+  textPrimary: {
+    fontFamily: theme.typography.RobotofontFamilyMedium,
+    fontSize: width * 0.044,
+  },
+
   btnContainer: {
     position: 'absolute',
-    bottom: height * 0.03,
+    bottom: height * 0.01,
     width: '100%',
     paddingHorizontal: width * 0.05,
     alignItems: 'center',

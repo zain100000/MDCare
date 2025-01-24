@@ -195,7 +195,11 @@ const Profile = () => {
               <InputField
                 value={location}
                 placeholder={
-                  location || (isTracking ? 'Tracker Is On' : 'Tracker Is Off')
+                  typeof location === 'string'
+                    ? location
+                    : isTracking
+                    ? 'Tracker Is On'
+                    : 'Tracker Is Off'
                 }
                 placeholderTextColor={theme.colors.primary}
                 editable={false}

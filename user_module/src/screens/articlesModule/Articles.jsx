@@ -45,7 +45,7 @@ const Articles = () => {
     <ArticleCard
       title={item.title}
       content={item.content}
-      imageSource={require('../../assets/placeHolder/default_avatar.png')}
+      imageSource={require('../../assets/placeHolder/img_placeholder.png')}
     />
   );
 
@@ -61,19 +61,14 @@ const Articles = () => {
 
         <View style={styles.searchContainer}>
           <View style={styles.iconContainer}>
-            <Ionicons
-              name={'search'}
-              size={width * 0.05}
-              color={theme.colors.primary}
-            />
+            <Ionicons name={'search'} size={width * 0.05} color={'#AE9352'} />
           </View>
           <InputField
             placeholder="Search"
-            placeholderTextColor={theme.colors.primary}
-            backgroundColor= {theme.colors.white}            
+            placeholderTextColor={'#AE9352'}
+            backgroundColor={theme.colors.white}
             onChangeText={setSearchQuery}
-
-          />         
+          />
         </View>
       </View>
 
