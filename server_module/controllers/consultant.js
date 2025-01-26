@@ -49,6 +49,19 @@ exports.createConsultant = [
   },
 ];
 
+exports.getAllConsultants = [
+  isAuth,
+  async (req, res) => {
+    try {
+      const consultants = await Consultant.find();
+      return res.status(200).json({ success: true, consultants });
+    } catch (error) {
+      console.error("Error fetching consultants:", error.message);
+      res.status(500).json({ success: false, message: "Server error!" });
+    }
+  },
+];
+
 // Update consultant details (Authenticated route)
 exports.editConsultant = [
   isAuth,

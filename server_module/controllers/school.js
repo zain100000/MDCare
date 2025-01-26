@@ -95,8 +95,7 @@ exports.getWaitingList = async (req, res) => {
 };
 
 exports.getAllSchools = [
-  isAuth,
-  isSuperAdmin,
+  isAuth,  
   async (req, res) => {
     try {
       const schools = await School.find();

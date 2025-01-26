@@ -14,7 +14,7 @@ import SecondaryHeader from '../../utils/customComponents/customHeaders/Secondar
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../../utils/customComponents/customInputField/InputField';
 import {useDispatch, useSelector} from 'react-redux';
-import {getWaitinglistConsultant} from '../../redux/slices/waitinglistConsultantSlice';
+import {getConsultant} from '../../redux/slices/consultantSlice';
 import ConsultantCard from '../../utils/customComponents/customConsultantCard/ConsultantCard';
 
 const {width, height} = Dimensions.get('screen');
@@ -23,14 +23,12 @@ const Consultant = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const consultants = useSelector(
-    state => state.waitinglistconsultant.waitinglist,
-  );
+  const consultants = useSelector(state => state.consultants.consultants);
 
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    dispatch(getWaitinglistConsultant());
+    dispatch(getConsultant());
   }, [dispatch]);
 
   useEffect(() => {
@@ -63,11 +61,7 @@ const Consultant = () => {
 
         <View style={styles.searchContainer}>
           <View style={styles.iconContainer}>
-            <Ionicons
-              name={'search'}
-              size={width * 0.05}
-              color={'#238579'}
-            />
+            <Ionicons name={'search'} size={width * 0.05} color={'#238579'} />
           </View>
           <InputField
             placeholder="Search"

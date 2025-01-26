@@ -5,8 +5,8 @@ import {combineReducers} from 'redux';
 import authReducer from '../slices/authSlice';
 import userReducer from '../slices/userSlice';
 import articleReducer from '../slices/articleSlice';
-import waitinglistReducer from '../slices/waitinglistSlice';
-import waitinglistConsultantReducer from '../slices/waitinglistConsultantSlice';
+import schoolReducer from '../slices/schoolSlice';
+import consultantReducer from '../slices/consultantSlice';
 import locationReducer from '../slices/locationSlice';
 import videoReducer from '../slices/videoSlice';
 
@@ -20,8 +20,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   users: userReducer,
   articles: articleReducer,
-  waitinglist: waitinglistReducer,
-  waitinglistconsultant: waitinglistConsultantReducer,
+  schools: schoolReducer,
+  consultants: consultantReducer,
   location: locationReducer,
   video: videoReducer,
 });

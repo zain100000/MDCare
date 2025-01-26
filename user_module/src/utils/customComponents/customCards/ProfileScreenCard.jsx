@@ -35,7 +35,8 @@ const ProfileScreenCard = ({
   };
 
   return (
-    <View
+    <TouchableOpacity
+      onPress={handlePress}
       style={[
         globalStyles.card,
         {
@@ -82,17 +83,17 @@ const ProfileScreenCard = ({
 
         <View style={styles.cardRightContainer}>
           <View style={styles.cardIconContainer}>
-            <TouchableOpacity onPress={handlePress}>
+            <View>
               <Ionicons
                 name={rightIcon || 'chevron-forward'}
                 size={30}
                 color={theme.colors.primary}
               />
-            </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

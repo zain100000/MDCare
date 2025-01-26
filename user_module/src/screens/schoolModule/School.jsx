@@ -14,7 +14,7 @@ import SecondaryHeader from '../../utils/customComponents/customHeaders/Secondar
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../../utils/customComponents/customInputField/InputField';
 import {useDispatch, useSelector} from 'react-redux';
-import {getWaitinglist} from '../../redux/slices/waitinglistSlice';
+import {getSchool} from '../../redux/slices/schoolSlice';
 import SchoolCard from '../../utils/customComponents/customSchoolCard/SchoolCard';
 
 const {width, height} = Dimensions.get('screen');
@@ -23,19 +23,19 @@ const School = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const waitinglist = useSelector(state => state.waitinglist.waitinglist);
+  const schools = useSelector(state => state.schools.schools);
 
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    dispatch(getWaitinglist());
+    dispatch(getSchool());
   }, [dispatch]);
 
   useEffect(() => {
-    console.log('Fetched Schools:', waitinglist);
-  }, [waitinglist]);
+    console.log('Fetched Schools:', schools);
+  }, [schools]);
 
-  const filteredSchools = (waitinglist || []).filter(item =>
+  const filteredSchools = (schools || []).filter(item =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -70,7 +70,7 @@ const School = () => {
           <InputField
             placeholder="Search"
             placeholderTextColor={theme.colors.primary}
-            backgroundColor= {theme.colors.white}            
+            backgroundColor={theme.colors.white}
             onChangeText={setSearchQuery}
           />
         </View>
