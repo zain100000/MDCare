@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
@@ -76,6 +77,22 @@ userSchema.statics.isThisEmailInUse = async function (email) {
     console.log("Error inside isThisEmailInUse method:", error.message);
     return false;
   }
+};
+
+userSchema.methods.generatePasswordResetToken = function () {
+  // Generate a random token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  // Hash the token and set it to `resetPasswordToken`
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Set an expiration time for the reset token (e.g., 1 hour from now)
+  this.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+
+  return resetToken; // Return the plain token for sending to the user
 };
 
 module.exports = mongoose.model("User", userSchema);

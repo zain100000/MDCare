@@ -3,10 +3,13 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const cloudinary = require("../helper/imageUpload");
 const sendEmail = require("../helper/emailHelper"); // Email helper to send emails
-const { sendWelcomeEmail } = require("../utils/nodeMailer");
+const {
+  sendWelcomeEmail,
+  transport,
+  sendResetPasswordEmail,
+} = require("../utils/nodeMailer");
 const School = require("../models/school");
 const Consultant = require("../models/consultant");
-const consultant = require("../models/consultant");
 // const sendEmail = () => {
 //   sendWelcomeEmail
 // }
@@ -39,7 +42,7 @@ exports.createUser = async (req, res) => {
 exports.userSignIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    console.log("inside userSignIn");
     // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
@@ -126,14 +129,9 @@ exports.forgotPassword = async (req, res) => {
     const resetToken = user.generatePasswordResetToken();
     await user.save();
 
-    const resetURL = `${req.protocol}://${req.get("host")}/reset-password/${resetToken}`;
+    const resetURL = `${req.protocol}://${req.get("host")}/api/auth/reset-password/${resetToken}`;
     const message = `You are receiving this email because you requested a password reset. Click the link below to reset your password: \n\n ${resetURL}`;
-
-    await sendEmail({
-      email: user.email,
-      subject: "Password Reset Request",
-      message,
-    });
+    await sendResetPasswordEmail(user, resetURL);
 
     res.status(200).json({
       success: true,
@@ -146,38 +144,123 @@ exports.forgotPassword = async (req, res) => {
 };
 
 // Reset Password
-exports.resetPassword = async (req, res) => {
+
+exports.getResetPasswordForm = async (req, res) => {
   try {
-    const { resetToken, email } = req.body;
+    const { resetToken } = req.params;
 
     const hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
+
     const user = await User.findOne({
       resetPasswordToken: hashedToken,
       resetPasswordExpires: { $gt: Date.now() }, // Ensure token has not expired
     });
 
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid or expired reset token!",
-      });
+      return res.status(400).send("Invalid or expired reset token!");
     }
 
-    user.password = password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-    await user.save();
+    // Serve the password reset form
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Reset Password</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f3f3f3;
+          }
+          form {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+          input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+          button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+          button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <form id="resetPasswordForm">
+          <h2>Reset Your Password</h2>
+          <label for="password">New Password:</label>
+          <input type="password" id="password" name="password" minlength="8" required />
 
-    res.status(200).json({
-      success: true,
-      message: "Password reset successful!",
-    });
+          <label for="confirmPassword">Confirm Password:</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required />
+
+          <button type="submit">Reset Password</button>
+        </form>
+        <script>
+          const form = document.getElementById('resetPasswordForm');
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+              alert('Passwords do not match!');
+              return;
+            }
+
+            try {
+              // Send a fetch request to update the password
+              const response = await fetch('/api/auth/reset-password/${resetToken}', {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password }),
+              });
+
+              if (response.ok) {
+                alert('Password updated successfully!');
+                window.close(); // Close the tab
+              } else {
+                const { message } = await response.json();
+                alert(message || 'Failed to reset password!');
+              }
+            } catch (error) {
+              console.error('Error resetting password:', error);
+              alert('Something went wrong! Please try again.');
+              alert(error);
+            }
+          });
+        </script>
+      </body>
+      </html>
+    `);
   } catch (error) {
-    console.error("Error during reset password:", error.message);
-    res.status(500).json({ success: false, message: "Server error!" });
+    console.error("Error displaying reset password form:", error.message);
+    res.status(500).send("Server error!");
   }
 };
 

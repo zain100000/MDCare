@@ -30,11 +30,12 @@ const Video = () => {
     dispatch(getVideos());
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log('Fetched Videos:', videos);
-  }, [videos]);
+  const cleanedVideos = videos.map(video => ({
+    ...video,
+    link: video.link.split('\n')[0].trim(), // Clean the URL
+  }));
 
-  const filteredVideos = videos.filter(item =>
+  const filteredVideos = cleanedVideos.filter(item =>
     item.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
