@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require('cors');
+const cors = require("cors");
 require("dotenv").config();
 require("./models/db");
 
@@ -42,5 +42,5 @@ app.get("/", (req, res) => {
 
 // Start the server
 app.listen(8000, () => {
-  console.log("Server is listening on port 8000");
+  console.log("Server is listening on port 9000");
 });

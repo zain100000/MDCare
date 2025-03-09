@@ -10,7 +10,7 @@ exports.createConsultant = [
   isAuth,
   async (req, res) => {
     try {
-      const { name, expertise, location, bio, email, password } = req.body;
+      const { name, expertise, location, bio, email, password, phone } = req.body;
 
       // Ensure the user is a SuperAdmin before creating a consultant
       if (!req.user.isSuperAdmin) {
@@ -33,6 +33,7 @@ exports.createConsultant = [
         bio,
         email,
         password,
+        phone
       });
 
       await consultant.save();
@@ -78,7 +79,7 @@ exports.editConsultant = [
       // Find the consultant by ID and update their details
       const updatedConsultant = await Consultant.findByIdAndUpdate(
         id,
-        { name, expertise, location, bio },
+        { name, expertise, location, bio, phone },
         { new: true }
       );
 

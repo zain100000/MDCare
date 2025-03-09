@@ -10,7 +10,12 @@ export const updateLocation = createAsyncThunk(
   'location/updateLocation',
   async ({latitude, longitude}, {rejectWithValue}) => {
     try {
-      console.log('Updating location with latitude:', latitude, 'longitude:', longitude);
+      console.log(
+        'Updating location with latitude:',
+        latitude,
+        'longitude:',
+        longitude,
+      );
 
       const token = await AsyncStorage.getItem('authToken');
       console.log('Auth token retrieved:', token);
@@ -27,7 +32,7 @@ export const updateLocation = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       console.log('Location update response:', response.data);
@@ -47,7 +52,7 @@ export const updateLocation = createAsyncThunk(
 const locationSlice = createSlice({
   name: 'location',
   initialState: {
-    location: null,
+    location: {latitude: null, longitude: null}, // Initialize as object with default values
     address: null,
     isTracking: false,
     loading: false,
@@ -57,8 +62,11 @@ const locationSlice = createSlice({
     toggleTracking: state => {
       state.isTracking = !state.isTracking;
     },
+    updateAddress: (state, action) => {
+      state.address = action.payload;
+    },
     resetLocationState: state => {
-      state.location = null;
+      state.location = {latitude: null, longitude: null}; // Reset to an object with default values
       state.address = null;
       state.isTracking = false;
       state.loading = false;
@@ -70,23 +78,24 @@ const locationSlice = createSlice({
       .addCase(updateLocation.pending, state => {
         state.loading = true;
         state.error = null;
-        console.log('Location update pending...');
       })
       .addCase(updateLocation.fulfilled, (state, action) => {
-        console.log('Location update successful:', action.payload);
         state.loading = false;
-        state.location = action.payload.location;
-        state.address = action.payload.address;
+        state.location = action.payload.location || {
+          latitude: null,
+          longitude: null,
+        }; // Ensure default values
+        state.address = action.payload.address || null;
         state.isTracking = true;
       })
       .addCase(updateLocation.rejected, (state, action) => {
-        console.error('Location update failed:', action.payload);
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const {toggleTracking, resetLocationState} = locationSlice.actions;
+export const {toggleTracking, updateAddress, resetLocationState} =
+  locationSlice.actions;
 
 export default locationSlice.reducer;

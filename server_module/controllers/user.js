@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const User = require("../models/user");
 const cloudinary = require("../helper/imageUpload");
 const sendEmail = require("../helper/emailHelper"); // Email helper to send emails
@@ -275,7 +276,21 @@ exports.uploadProfile = async (req, res) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId);
+
+    const userIdFromToken = new mongoose.Types.ObjectId(decoded.userId);
+    const userIdFromRequest = req.user.id; // Access userId from req.user
+
+    console.log("userIdFromToken:", userIdFromToken);
+    console.log("userIdFromRequest:", userIdFromRequest);
+    console.log("req.user:", req.user);
+
+    if (userIdFromToken.equals(userIdFromRequest)) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Forbidden: User ID mismatch!" });
+    }
+
+    const user = await User.findById(userIdFromToken);
     if (!user) {
       return res
         .status(401)

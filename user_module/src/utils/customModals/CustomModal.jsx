@@ -17,7 +17,6 @@ const CustomModal = ({
   visible,
   onClose,
   title,
-  description,
   imageSource,
   primaryButtonText,
   onPrimaryButtonPress,

@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Dimensions,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import {globalStyles} from '../../../styles/globalStyles';
 import {theme} from '../../../styles/theme';
@@ -15,7 +16,9 @@ const {width, height} = Dimensions.get('screen');
 
 const ArticleCard = ({title, content, imageSource, onPress}) => {
   return (
-    <SafeAreaView style={[globalStyles.container, styles.primaryContainer]}>
+    <TouchableOpacity
+      style={[globalStyles.container, styles.primaryContainer]}
+      activeOpacity={0.9}>
       <LinearGradient
         colors={['#AE9352', '#88835B']}
         start={{x: 0.5, y: 0}}
@@ -27,7 +30,7 @@ const ArticleCard = ({title, content, imageSource, onPress}) => {
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.content}>{content}</Text>
       </LinearGradient>
-    </SafeAreaView>
+    </TouchableOpacity>
   );
 };
 

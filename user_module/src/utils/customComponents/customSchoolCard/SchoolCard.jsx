@@ -17,6 +17,7 @@ const {width, height} = Dimensions.get('screen');
 const SchoolCard = ({name, description, imageSource, onPress}) => {
   return (
     <TouchableOpacity
+      onPress={onPress}
       activeOpacity={0.9}
       style={[globalStyles.container, styles.primaryContainer]}>
       <LinearGradient

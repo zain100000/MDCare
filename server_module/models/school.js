@@ -9,6 +9,9 @@ const schoolSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+  },
   specialties: { type: [String], default: [], required: true },
   location: {
     type: {

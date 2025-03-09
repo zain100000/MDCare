@@ -31,16 +31,23 @@ const Consultant = () => {
     dispatch(getConsultant());
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log('Fetched Consultants:', consultants);
-  }, [consultants]);
-
   const filteredConsultants = (consultants || []).filter(item =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const renderConsultant = ({item}) => (
     <ConsultantCard
+      onPress={() =>
+        navigation.navigate('ConsultantDetail', {
+          consultantlId: item._id,
+          name: item.name,
+          bio: item.bio,
+          expertise: item.expertise,
+          phone: item.phone,
+          image:
+            'https://th.bing.com/th/id/OIP.NdNKlT8S-vF-Z7UJLhI2JwHaE8?rs=1&pid=ImgDetMain', // Static image for now
+        })
+      }
       name={item.name}
       bio={item.bio}
       imageSource={{

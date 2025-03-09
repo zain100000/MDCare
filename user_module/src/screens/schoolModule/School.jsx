@@ -31,16 +31,23 @@ const School = () => {
     dispatch(getSchool());
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log('Fetched Schools:', schools);
-  }, [schools]);
-
   const filteredSchools = (schools || []).filter(item =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const renderSchool = ({item}) => (
     <SchoolCard
+      onPress={() =>
+        navigation.navigate('SchoolDetail', {
+          schoolId: item._id,
+          name: item.name, // Pass the name
+          description: item.description, // Pass the description
+          specialties: item.specialties,
+          phone: item.phone,
+          image:
+            'https://th.bing.com/th/id/OIP.aEvPkBFdKytOiJj-gZV-CQHaEK?rs=1&pid=ImgDetMain', // Static image for now
+        })
+      }
       name={item.name}
       description={item.description}
       imageSource={{

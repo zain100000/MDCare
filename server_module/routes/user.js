@@ -44,8 +44,9 @@ router.post(
   "/upload-profile",
   isAuth,
   uploads.single("profile"),
-  uploadProfile
+  uploadProfile,
 );
+
 router.post("/forgot-password", forgotPassword);
 router.post("/search-school", SearchSchool);
 router.post("/search-consultant", SearchConsultant);

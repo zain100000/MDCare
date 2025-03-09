@@ -10,6 +10,9 @@ const consultantSchema = new mongoose.Schema({
     type:String,
     required:true
   },
+  phone:{
+    type:String,
+  },
   name: { type: String, required: true },
   expertise: { type: String, required: true }, // Field of expertise
   location: {

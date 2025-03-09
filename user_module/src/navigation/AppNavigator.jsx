@@ -19,6 +19,10 @@ import School from '../screens/schoolModule/School';
 import Consultant from '../screens/consultantModule/Consultant';
 import Profile from '../screens/profileModule/Profile';
 import Video from '../screens/videoModule/Video';
+import SchoolDetail from '../screens/schoolModule/SchoolDetail';
+import ConsultantDetail from '../screens/consultantModule/ConsultantDetail';
+import SchoolChat from '../screens/chatScreen/SchoolChat';
+import ConsultantChat from '../screens/chatScreen/ConsultantChat';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,11 +46,16 @@ const AppNavigator = () => {
         {/* Main Screens */}
         <Stack.Screen name="Main" component={BottomNavigator} />
         <Stack.Screen name="School" component={School} />
+        <Stack.Screen name="SchoolDetail" component={SchoolDetail} />
         <Stack.Screen name="Consultant" component={Consultant} />
+        <Stack.Screen name="ConsultantDetail" component={ConsultantDetail} />
         <Stack.Screen name="Articles" component={Articles} />
         <Stack.Screen name="Videos" component={Video} />
         {/* <Stack.Screen name="Games" component={BottomNavigator} /> */}
         <Stack.Screen name="Kid_Info_Form" component={KidInfoForm} />
+
+        <Stack.Screen name="SchoolChat" component={SchoolChat} />
+        <Stack.Screen name="ConsultantChat" component={ConsultantChat} />
       </Stack.Navigator>
     </>
   );

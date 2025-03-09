@@ -25,6 +25,7 @@ exports.createSchool = async (req, res) => {
       Rating,
       email,
       password,
+      phone,
     } = req.body;
 
     const isThisEmailInUse =
@@ -42,6 +43,7 @@ exports.createSchool = async (req, res) => {
       description,
       specialties,
       Rating,
+      phone,
     });
     await school.save();
 
@@ -95,7 +97,7 @@ exports.getWaitingList = async (req, res) => {
 };
 
 exports.getAllSchools = [
-  isAuth,  
+  isAuth,
   async (req, res) => {
     try {
       const schools = await School.find();
@@ -142,6 +144,7 @@ exports.editSchoolStatus = [
           name: waitingListSchool.name,
           location: waitingListSchool.location,
           specialties: waitingListSchool.specialties,
+          phone: waitingListSchool.phone,
         });
         await school.save();
         await Waitinglist.findByIdAndDelete(id);
@@ -205,7 +208,7 @@ exports.editSchool = [
 
       const updatedSchool = await School.findByIdAndUpdate(
         id,
-        { name, location, description, specialties, rating },
+        { name, location, description, specialties, rating, phone },
         { new: true }
       );
 

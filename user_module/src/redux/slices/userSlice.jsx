@@ -33,6 +33,60 @@ export const getUser = createAsyncThunk(
   },
 );
 
+export const uploadProfile = createAsyncThunk(
+  'api/auth/users/uploadProfile',
+  async ({source}, {rejectWithValue}) => {
+    // Include userId in the arguments
+    try {
+      console.log('Starting profile upload...');
+
+      const token = await getToken(rejectWithValue);
+      if (!token) {
+        console.error('Authentication token is missing.');
+        return rejectWithValue('Authentication token is missing.');
+      }
+
+      const formData = new FormData();
+      formData.append('profile', source);
+
+      console.log('Sending request to backend...');
+      const response = await axios.post(
+        `${BASE_URL}/api/auth/upload-profile`, // No need to include userId in the URL
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+
+      console.log('Response from backend:', response);
+
+      if (response.status !== 201) {
+        console.error('Failed to upload profile:', response.data);
+        return rejectWithValue(
+          response.data?.message || 'Failed to upload profile.',
+        );
+      }
+
+      console.log('Profile uploaded successfully!');
+      return response.data.data;
+    } catch (error) {
+      console.error('Error uploading profile:', error);
+
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(
+          error.response?.data?.message ||
+            error.message ||
+            'An error occurred.',
+        );
+      }
+      return rejectWithValue(error.message || 'An error occurred.');
+    }
+  },
+);
+
 const userSlice = createSlice({
   name: 'users',
   initialState: {
@@ -52,6 +106,18 @@ const userSlice = createSlice({
         state.users = action.payload;
       })
       .addCase(getUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(uploadProfile.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
+      })
+      .addCase(uploadProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
