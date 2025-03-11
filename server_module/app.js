@@ -9,6 +9,7 @@ const schoolRouter = require("./routes/school");
 const articleRouter = require("./routes/article");
 const consultantRoutes = require("./routes/consultant");
 const videoRoutes = require("./routes/video");
+const kidsRoutes = require("./routes/kidRoutes");
 // const schoolRoutes = require('./routes/school');
 // const articleRoutes = require('./routes/article');
 
@@ -23,6 +24,7 @@ app.use("/api/school", schoolRouter);
 app.use("/api/article", articleRouter);
 app.use("/api/consultant", consultantRoutes);
 app.use("/api/video", videoRoutes);
+app.use("/api/kid", kidsRoutes);
 
 // Register routes with proper prefixes
 // app.use('/api/v1', userRouter); // Add `/api/v1` prefix for user routes
