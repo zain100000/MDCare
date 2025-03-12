@@ -24,7 +24,7 @@ export const getSchool = createAsyncThunk(
       const token = await getToken(rejectWithValue);
 
       // Make the API request with the token
-      const response = await axios.get(`${BASE_URL}/api/school/get-school`, {
+      const response = await axios.get(`${BASE_URL}/school/get-school`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

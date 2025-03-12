@@ -26,7 +26,7 @@ export const updateLocation = createAsyncThunk(
       }
 
       const response = await axios.post(
-        `${BASE_URL}/api/auth/update-location-user`,
+        `${BASE_URL}/auth/update-location-user`,
         {latitude, longitude},
         {
           headers: {

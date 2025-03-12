@@ -25,7 +25,7 @@ export const getConsultant = createAsyncThunk(
 
       // Make the API request with the token
       const response = await axios.get(
-        `${BASE_URL}/api/consultant/get-consultant`,
+        `${BASE_URL}/consultant/get-consultant`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -10,7 +10,7 @@ export const getArticles = createAsyncThunk(
   'article/getArticles',
   async (_, {rejectWithValue}) => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/article/get-article`);
+      const response = await axios.get(`${BASE_URL}/article/get-article`);
       console.log('API Response:', response.data);
       return response.data.articles;
     } catch (error) {

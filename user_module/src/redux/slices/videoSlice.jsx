@@ -22,7 +22,7 @@ export const getVideos = createAsyncThunk(
   async (_, {rejectWithValue}) => {
     try {
       const token = await getToken(rejectWithValue);
-      const response = await axios.get(`${BASE_URL}/api/video/get-videos`, {
+      const response = await axios.get(`${BASE_URL}/video/get-videos`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

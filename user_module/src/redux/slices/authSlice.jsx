@@ -12,7 +12,7 @@ export const registerUser = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/auth/sign-up`,
+        `${BASE_URL}/auth/sign-up`,
         userData,
       );
       console.log('Server Response:', response.data);
@@ -33,7 +33,7 @@ export const loginUser = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/auth/sign-in`,
+        `${BASE_URL}/auth/sign-in`,
         loginData,
       );
 
@@ -62,7 +62,7 @@ export const logoutUser = createAsyncThunk(
       console.log('Retrieved Token:', token);
 
       const response = await axios.post(
-        `${BASE_URL}/api/auth/sign-out`,
+        `${BASE_URL}/auth/sign-out`,
         {},
         {
           headers: {Authorization: `Bearer ${token}`},

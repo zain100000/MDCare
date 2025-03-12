@@ -16,16 +16,13 @@ const getToken = async rejectWithValue => {
 };
 
 export const getUser = createAsyncThunk(
-  'api/auth/users/getUsers',
+  'auth/users/getUsers',
   async (userId, {rejectWithValue}) => {
     const token = await getToken(rejectWithValue);
     try {
-      const response = await axios.get(
-        `${BASE_URL}/api/auth/get-users/${userId}`,
-        {
-          headers: {Authorization: `Bearer ${token}`},
-        },
-      );
+      const response = await axios.get(`${BASE_URL}/auth/get-users/${userId}`, {
+        headers: {Authorization: `Bearer ${token}`},
+      });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'An error occurred.');
@@ -34,7 +31,7 @@ export const getUser = createAsyncThunk(
 );
 
 export const uploadProfile = createAsyncThunk(
-  'api/auth/users/uploadProfile',
+  'auth/users/uploadProfile',
   async ({source}, {rejectWithValue}) => {
     // Include userId in the arguments
     try {
@@ -51,7 +48,7 @@ export const uploadProfile = createAsyncThunk(
 
       console.log('Sending request to backend...');
       const response = await axios.post(
-        `${BASE_URL}/api/auth/upload-profile`, // No need to include userId in the URL
+        `${BASE_URL}/auth/upload-profile`, // No need to include userId in the URL
         formData,
         {
           headers: {

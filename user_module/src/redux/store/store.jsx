@@ -9,6 +9,7 @@ import schoolReducer from '../slices/schoolSlice';
 import consultantReducer from '../slices/consultantSlice';
 import locationReducer from '../slices/locationSlice';
 import videoReducer from '../slices/videoSlice';
+import kidReducer from '../slices/kidSlice';
 
 const persistConfig = {
   key: 'root',
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   consultants: consultantReducer,
   location: locationReducer,
   video: videoReducer,
+  kids: kidReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

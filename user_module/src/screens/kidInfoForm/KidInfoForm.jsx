@@ -6,7 +6,7 @@ import {
   Dimensions,
   SafeAreaView,
   ScrollView,
-  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {globalStyles} from '../../styles/globalStyles';
 import {useNavigation} from '@react-navigation/native';
@@ -15,21 +15,65 @@ import {theme} from '../../styles/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../../utils/customComponents/customInputField/InputField';
 import Button from '../../utils/customComponents/customButton/Button';
+import {useDispatch} from 'react-redux';
+import {addKid} from '../../redux/slices/kidSlice';
+import CustomModal from '../../utils/customModals/CustomModal';
 
 const {width, height} = Dimensions.get('screen');
 
 const KidInfoForm = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
   const [speciality, setSpeciality] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const genderOptions = [
     {label: 'Male', value: 'Male'},
     {label: 'Female', value: 'Female'},
+    {label: 'Other', value: 'Other'},
   ];
+
+  const handleAddKid = async () => {
+    setLoading(true);
+
+    const fields = {
+      name,
+      age,
+      gender,
+      speciality,
+    };
+
+    try {
+      const resultAction = await dispatch(addKid(fields));
+
+      if (addKid.fulfilled.match(resultAction)) {
+        setShowSuccessModal(true);
+
+        setTimeout(() => {
+          setShowSuccessModal(false);
+          navigation.replace('Main');
+        }, 3000);
+      } else {
+        const errorMessage =
+          addKid.rejected.match(resultAction) && resultAction.payload
+            ? resultAction.payload.error || 'Failed to add kid.'
+            : 'Unexpected response from server.';
+
+        setLoading(false);
+        console.error(errorMessage);
+      }
+    } catch (err) {
+      console.error('An error occurred:', err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={[globalStyles.container, styles.primaryContainer]}>
@@ -123,15 +167,21 @@ const KidInfoForm = () => {
                 <Button
                   title="Add"
                   color={theme.colors.black}
-                  //   loading={loading}
-                  //   onPress={handleLogin}
-                  //   disabled={!isButtonEnabled}
+                  loading={loading}
+                  onPress={handleAddKid}
                 />
               </View>
             </View>
           </ScrollView>
         </View>
       </View>
+
+      <CustomModal
+        visible={showSuccessModal}
+        title="Kid Added Successfully!"
+        imageSource={require('../../assets/icons/success.png')}
+        onClose={() => setShowSuccessModal(false)}
+      />
     </SafeAreaView>
   );
 };
