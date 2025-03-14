@@ -11,7 +11,8 @@ const articleRouter = require("./routes/article");
 const consultantRoutes = require("./routes/consultant");
 const videoRoutes = require("./routes/video");
 const kidsRoutes = require("./routes/kidRoutes");
-const chatRoutes = require("./routes/chatRoutes");
+const consultantChatRoutes = require("./routes/consultantChatRoutes");
+const schoolChatRoutes = require("./routes/schoolChatRoutes");
 
 const app = express();
 
@@ -26,7 +27,8 @@ app.use("/api/article", articleRouter);
 app.use("/api/consultant", consultantRoutes);
 app.use("/api/video", videoRoutes);
 app.use("/api/kid", kidsRoutes);
-app.use("/api/chat", chatRoutes);
+app.use("/api/consultantChat", consultantChatRoutes);
+app.use("/api/schoolChat", schoolChatRoutes);
 
 // Test route
 app.get("/test", (req, res) => {

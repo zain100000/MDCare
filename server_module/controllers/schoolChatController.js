@@ -1,4 +1,4 @@
-const Chat = require("../models/chat");
+const Chat = require("../models/schoolChat");
 
 const saveMessage = async (req, res) => {
   const { senderId, receiverId, message } = req.body;  // Destructuring inside Controller
