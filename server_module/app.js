@@ -1,5 +1,6 @@
 const express = require("express");
 const http = require("http");
+const socketIo = require('socket.io');
 const cors = require("cors");
 require("dotenv").config();
 require("./models/db");
@@ -13,8 +14,43 @@ const videoRoutes = require("./routes/video");
 const kidsRoutes = require("./routes/kidRoutes");
 const consultantChatRoutes = require("./routes/consultantChatRoutes");
 const schoolChatRoutes = require("./routes/schoolChatRoutes");
-
+const { activeUsers} = require('./socketManager');
+const { initializeSocket } = require("./socket");
 const app = express();
+//new code
+
+const server = http.createServer(app);
+const io = initializeSocket(server);
+
+
+
+
+// io.on("connection", (socket) => {
+//   console.log("🔌 New client connected:", socket.id);
+
+//   socket.on("joinChat", ({ userId }) => {
+//     if (!activeUsers.has(userId)) {
+//       activeUsers.set(userId, new Set());  // Store multiple sockets
+//     }
+//     activeUsers.get(userId).add(socket.id);
+//     console.log(`✅ User ${userId} joined. Socket ID: ${socket.id}`);
+//   });
+
+//   socket.on("disconnect", () => {
+//     for (let [userId, socketId] of activeUsers) {
+//       if (socketId === socket.id) {
+//         activeUsers.delete(userId);
+//         console.log(`❌ User ${userId} disconnected.`);
+//         break;
+//       }
+//     }
+//   });
+// });
+
+// Export io instance
+//module.exports = {app, server, io };
+
+
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -42,6 +78,11 @@ app.get("/", (req, res) => {
 
 // ✅ Start the server
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
+// app.listen(PORT, () => {
+//   console.log(`🚀 Server is listening on port ${PORT}`);
+// });
+server.listen(PORT, () => {
   console.log(`🚀 Server is listening on port ${PORT}`);
 });
+
+module.exports = { app, server, io };

@@ -39,7 +39,7 @@ const Consultant = () => {
     <ConsultantCard
       onPress={() =>
         navigation.navigate('ConsultantDetail', {
-          consultantlId: item._id,
+          consultantId: item._id,
           name: item.name,
           bio: item.bio,
           expertise: item.expertise,

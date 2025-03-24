@@ -70,12 +70,12 @@ exports.userSignIn = async (req, res) => {
 
     // Prepare user info to send back
     const userInfo = {
+      id: user._id,
       fullname: user.fullname,
       email: user.email,
       avatar: user.avatar || "",
       isSuperAdmin: user.superAdmin, // Return superAdmin status
     };
-
     res.json({ success: true, user: userInfo, token });
   } catch (error) {
     console.error("Error signing in:", error.message);
@@ -106,7 +106,6 @@ exports.getUserById = async (req, res) => {
         message: "User not found with the given ID!",
       });
     }
-
     res.status(200).json({ success: true, user });
   } catch (error) {
     console.error("Error fetching user by ID:", error.message);
@@ -284,7 +283,7 @@ exports.uploadProfile = async (req, res) => {
     console.log("userIdFromRequest:", userIdFromRequest);
     console.log("req.user:", req.user);
 
-    if (userIdFromToken.equals(userIdFromRequest)) {
+    if (!userIdFromToken.equals(userIdFromRequest)) {
       return res
         .status(403)
         .json({ success: false, message: "Forbidden: User ID mismatch!" });
@@ -303,7 +302,9 @@ exports.uploadProfile = async (req, res) => {
       height: 500,
       crop: "fill",
     });
-
+    if (!result || !result.secure_url) {
+      return res.status(500).json({ success: false, message: "Cloudinary upload failed!" });
+    }
     user.avatar = result.secure_url;
     await user.save();
 

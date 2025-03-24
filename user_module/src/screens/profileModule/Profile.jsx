@@ -439,6 +439,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../../utils/customComponents/customInputField/InputField';
 import ProfileScreenCard from '../../utils/customComponents/customCards/ProfileScreenCard';
 import Geolocation from 'react-native-geolocation-service';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+
 import {
   updateLocation,
   toggleTracking,
@@ -463,14 +465,17 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
 
   const user = useSelector(state => state.auth.user);
-
+  const state = useSelector(state => state);
+  console.log('initial',state);
   const location = useSelector(state => state.location.location);
   const address = useSelector(state => state.location.address);
   const isTracking = useSelector(state => state.location.isTracking);
 
   useEffect(() => {
     if (user && user.id) {
+      console.log('this');
       dispatch(getUser(user.id));
+      console.log('this');
     }
   }, [dispatch, user]);
 
@@ -511,23 +516,54 @@ const Profile = () => {
     setShowEditModal(true);
   };
 
+  // const toggleTracker = async () => {
+  //   if (!isTracking) {
+  //     if (Platform.OS === 'ios') {
+  //       Geolocation.requestAuthorization('whenInUse').then(status => {
+  //         if (status === 'granted') {
+  //           getLocation();
+  //         } else {
+  //           Alert.alert('Permission Denied', 'Location access is required.');
+  //         }
+  //       });
+  //     } else {
+  //       getLocation();
+  //     }
+  //   } else {
+  //     dispatch(toggleTracking());
+  //   }
+  // };
+
   const toggleTracker = async () => {
     if (!isTracking) {
-      if (Platform.OS === 'ios') {
-        Geolocation.requestAuthorization('whenInUse').then(status => {
-          if (status === 'granted') {
-            getLocation();
-          } else {
-            Alert.alert('Permission Denied', 'Location access is required.');
-          }
-        });
-      } else {
+      // Check permission for iOS and Android
+      const permissionStatus =
+        Platform.OS === 'ios'
+          ? await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+          : await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+  
+      if (permissionStatus === RESULTS.GRANTED) {
+        // Permission already granted, get location
         getLocation();
+      } else {
+        // Request permission for iOS and Android
+        const permissionRequest =
+          Platform.OS === 'ios'
+            ? await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+            : await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+  
+        if (permissionRequest === RESULTS.GRANTED) {
+          getLocation(); // Permission granted, get location
+        } else {
+          Alert.alert('Permission Denied', 'Location access is required.');
+        }
       }
     } else {
+      // Stop location tracking if already tracking
       dispatch(toggleTracking());
     }
   };
+  
 
   const getLocation = () => {
     Geolocation.getCurrentPosition(
@@ -536,7 +572,7 @@ const Profile = () => {
         dispatch(updateLocation({latitude, longitude}));
         try {
           const response = await axios.get(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=YOUR_GOOGLE_MAPS_API_KEY`,
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCaCSJ0BZItSyXqBv8vpD1N4WBffJeKhLQ`,
           );
           if (response.data.status === 'OK') {
             const address =
@@ -581,7 +617,8 @@ const Profile = () => {
       console.log('user.id:', user.id); // Check the value of user.id
 
       await dispatch(uploadProfile({userId: user.id, source})).unwrap();
-      dispatch(getUser(user.id));
+      await dispatch(getUser(user.id));
+      console.log('after pic upload',user);
       setShowEditModal(false);
     } catch (error) {
       if (error.message !== 'User cancelled image selection') {
