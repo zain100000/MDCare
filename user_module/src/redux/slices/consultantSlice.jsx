@@ -32,7 +32,7 @@ export const getConsultant = createAsyncThunk(
           },
         },
       );
-      console.log('API Response:', response.data);
+      //console.log('API Response:', response.data);
 
       if (response.data && Array.isArray(response.data.consultants)) {
         return response.data.consultants;
@@ -62,7 +62,7 @@ const consultantSlice = createSlice({
         state.error = null;
       })
       .addCase(getConsultant.fulfilled, (state, action) => {
-        console.log('Fetched Consultants:', action.payload);
+       // console.log('Fetched Consultants:', action.payload);
         state.loading = false;
         state.consultants = action.payload;
       })

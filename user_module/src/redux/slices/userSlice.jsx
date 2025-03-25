@@ -20,10 +20,11 @@ export const getUser = createAsyncThunk(
   async (userId, {rejectWithValue}) => {
     const token = await getToken(rejectWithValue);
     try {
-      const response = await axios.get(`${BASE_URL}/auth/get-users/${userId}`, {
+      const response = await axios.get(`${BASE_URL}/auth/get-user-by-id/${userId}`, {
         headers: {Authorization: `Bearer ${token}`},
       });
-      return response.data.data;
+      console.log('in slice',response.data.user);
+      return response.data.user;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'An error occurred.');
     }
@@ -58,7 +59,7 @@ export const uploadProfile = createAsyncThunk(
         },
       );
 
-      console.log('Response from backend:', response);
+
 
       if (response.status !== 201) {
         console.error('Failed to upload profile:', response.data);

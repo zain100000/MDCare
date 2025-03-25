@@ -14,7 +14,7 @@ import {theme} from '../../styles/theme';
 import {globalStyles} from '../../styles/globalStyles';
 import Button from '../../utils/customComponents/customButton/Button';
 import { useNavigation } from '@react-navigation/native';
-
+import {useSelector, useDispatch} from 'react-redux';
 const {width, height} = Dimensions.get('screen');
 
 const ConsultantDetail = () => {
@@ -30,10 +30,12 @@ const ConsultantDetail = () => {
       console.log('Phone number not available');
     }
   };
-
+  
+  const senderId = useSelector(state => state.users.users._id);
   const handleChatNavigation = () => {
     navigation.navigate('ConsultantChat', {
-      Id: consultantId,
+      senderId,
+      consultantId,
       consultantName: name,
       consultantImage: image,
     });
