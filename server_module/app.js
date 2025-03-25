@@ -15,6 +15,7 @@ const kidsRoutes = require("./routes/kidRoutes");
 const consultantChatRoutes = require("./routes/consultantChatRoutes");
 const schoolChatRoutes = require("./routes/schoolChatRoutes");
 const { activeUsers} = require('./socketManager');
+const eventsRoutes = require("./routes/eventRoutes");
 const { initializeSocket } = require("./socket");
 const app = express();
 //new code
@@ -65,7 +66,7 @@ app.use("/api/video", videoRoutes);
 app.use("/api/kid", kidsRoutes);
 app.use("/api/consultantChat", consultantChatRoutes);
 app.use("/api/schoolChat", schoolChatRoutes);
-
+app.use("/api/event", eventsRoutes);
 // Test route
 app.get("/test", (req, res) => {
   res.send("Hello world");
