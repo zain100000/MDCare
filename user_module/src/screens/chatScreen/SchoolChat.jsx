@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -8,40 +8,122 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {theme} from '../../styles/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import CONFIG from '../../redux/config/Config';
+import {io} from 'socket.io-client';
 
 const {width, height} = Dimensions.get('screen');
 
 const SchoolChat = () => {
   const route = useRoute();
   const {
-    Id = '',
+    senderId,
+    schoolId,
     schoolName = 'Unknown',
     schoolImage = '',
   } = route.params || {};
-
-  const [messages, setMessages] = useState();
+  const {BASE_URL} = CONFIG;
+  const [messages, setMessages] = useState([]); // Fixed empty array instead of undefined
   const [inputText, setInputText] = useState('');
 
-  const onSend = () => {
+  const socket = io('http://10.0.2.2:8000', {transports: ['websocket']});
+
+  const fetchChatMessages = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/schoolChat/getChat/${senderId}/${schoolId}`,
+      );
+      //console.log('Chat Messages:', response.data);
+
+      const formattedMessages = response.data.map(msg => ({
+        _id: msg._id,
+        text: msg.message,
+        createdAt: new Date(msg.timestamp),
+        user: {
+          _id: msg.senderId === senderId ? 1 : 2,
+          name: msg.senderId === senderId ? 'You' : schoolName,
+        },
+      }));
+
+      setMessages(formattedMessages);
+    } catch (error) {
+      console.error('Error fetching chat messages:', error);
+    }
+  };
+
+  // ✅ Now, `fetchChatMessages` is available inside `useEffect`
+  useEffect(() => {
+    if (!schoolId) return;
+    fetchChatMessages();
+  }, [schoolId, senderId]);
+
+  useEffect(() => {
+    socket.connect();
+
+    socket.on('connect', () => {
+      console.log('✅ Connected to server with ID:', socket.id);
+      socket.emit('joinChat', {userId: senderId});
+    });
+
+    // 🔄 Listen for "fetchMessages" event from backend
+    socket.on('newMessage', () => {
+      console.log('🔄 Fetching updated messages...');
+      fetchChatMessages(); // Fetch latest messages
+    });
+
+    return () => {
+      socket.off('fetchMessages'); // Cleanup listener
+      socket.off('connect');
+    };
+  }, [schoolId, senderId]);
+
+  const onSend = async () => {
     if (inputText && inputText.trim()) {
       const newMessage = {
-        _id: Math.round(Math.random() * 1000000),
-        text: inputText.trim(),
-        createdAt: new Date(),
-        user: {
-          _id: 1,
-        },
+        senderId: senderId, // Current user (should be right side)
+        receiverId: schoolId, // school (should be left side)
+        message: inputText.trim(),
       };
-      setMessages(previousMessages =>
-        GiftedChat.append(previousMessages, newMessage),
-      );
-      setInputText('');
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/schoolChat/saveMessage`,
+          newMessage,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+
+        if (response.status === 201) {
+          const responseData = response.data;
+
+          setMessages(previousMessages =>
+            GiftedChat.append(previousMessages, {
+              _id: responseData._id,
+              text: responseData.message,
+              createdAt: new Date(responseData.timestamp),
+              user: {_id: 1},
+            }),
+          );
+
+          setInputText(''); // Clear input field after sending
+        } else {
+          console.error('Failed to send message:', response.data.error);
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     }
   };
 
@@ -79,7 +161,7 @@ const SchoolChat = () => {
         </View>
       </LinearGradient>
 
-      <View style={styles.messageList}>
+      {/* <View style={styles.messageList}>
         <GiftedChat
           messages={messages}
           onSend={onSend}
@@ -128,7 +210,82 @@ const SchoolChat = () => {
             />
           </TouchableOpacity>
         </View>
-      </LinearGradient>
+      </LinearGradient> */}
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Adjust based on platform
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        style={{flex: 1}}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={{flex: 1}}>
+            {/* ✅ Scrollable messages so keyboard doesn’t overlap */}
+            <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 0}}>
+              <View style={styles.messageList}>
+                <GiftedChat
+                  messages={messages}
+                  onSend={messages => onSend(messages)}
+                  user={{
+                    _id: 1,
+                  }}
+                  renderBubble={props => (
+                    <LinearGradient
+                      colors={['#07BBC6', '#035B60']}
+                      start={{x: 0, y: 0}}
+                      end={{x: 1, y: 0}}
+                      style={[
+                        styles.messageBubble,
+                        {minWidth: 50, maxWidth: '80%'},
+                      ]}>
+                      <View style={{padding: 10, flexShrink: 1}}>
+                        <Text style={styles.messageText}>
+                          {props.currentMessage.text}
+                        </Text>
+                      </View>
+                    </LinearGradient>
+                  )}
+                  renderInputToolbar={() => null}
+                  scrollToBottom
+                  scrollToBottomComponent={() => (
+                    <Ionicons name="chevron-down" size={24} color="#035B60" />
+                  )}
+                />
+              </View>
+            </ScrollView>
+            <LinearGradient
+              colors={['#07BBC6', '#035B60']}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.inputContainer}>
+              <View style={styles.inputWrapper}>
+                <Ionicons
+                  name="document-attach-outline"
+                  size={width * 0.06}
+                  color={theme.colors.secondary}
+                  style={styles.attachIcon}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Type here..."
+                  value={inputText}
+                  onChangeText={setInputText}
+                  placeholderTextColor={theme.colors.secondary}
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    onSend([{text: inputText, _id: Math.random()}])
+                  }
+                  style={styles.sendButton}>
+                  <Ionicons
+                    name="navigate"
+                    size={width * 0.06}
+                    color={theme.colors.secondary}
+                  />
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

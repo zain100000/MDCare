@@ -11,10 +11,7 @@ export const registerUser = createAsyncThunk(
     console.log('USERDATAAAA', userData);
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}/auth/sign-up`,
-        userData,
-      );
+      const response = await axios.post(`${BASE_URL}/auth/sign-up`, userData);
       console.log('Server Response:', response.data);
       return response.data;
     } catch (error) {
@@ -32,10 +29,7 @@ export const loginUser = createAsyncThunk(
     console.log('USERDATAAAA', loginData);
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}/auth/sign-in`,
-        loginData,
-      );
+      const response = await axios.post(`${BASE_URL}/auth/sign-in`, loginData);
 
       console.log('LOGIN RESPONSE', response.data);
 
@@ -115,9 +109,11 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
+        state.user = action.payload.user; // Ensure the whole user object is stored
         state.token = action.payload.token;
+        console.log('Redux state after login:', state.user); // Debugging
       })
+
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

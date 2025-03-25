@@ -44,6 +44,8 @@ const ConsultantChat = () => {
   const [inputText, setInputText] = useState('');
   //const senderId = '67d3071456d5732824a85d0d'; // Replace with actual sender ID
 
+  console.log('Sender ID:', senderId);
+
   const socket = io('http://10.0.2.2:8000', {transports: ['websocket']});
 
   const fetchChatMessages = async () => {
@@ -68,8 +70,6 @@ const ConsultantChat = () => {
       console.error('Error fetching chat messages:', error);
     }
   };
-
-  
 
   // ✅ Now, `fetchChatMessages` is available inside `useEffect`
   useEffect(() => {
@@ -172,7 +172,7 @@ const ConsultantChat = () => {
       </LinearGradient>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Adjust based on platform
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
         style={{flex: 1}}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{flex: 1}}>
@@ -181,7 +181,7 @@ const ConsultantChat = () => {
               <View style={styles.messageList}>
                 <GiftedChat
                   messages={messages}
-                 onSend={messages => onSend(messages)}
+                  onSend={messages => onSend(messages)}
                   user={{
                     _id: 1,
                   }}
@@ -203,9 +203,9 @@ const ConsultantChat = () => {
                   )}
                   renderInputToolbar={() => null}
                   scrollToBottom
-  scrollToBottomComponent={() => (
-    <Ionicons name="chevron-down" size={24} color="#238579" />
-  )}
+                  scrollToBottomComponent={() => (
+                    <Ionicons name="chevron-down" size={24} color="#238579" />
+                  )}
                 />
               </View>
             </ScrollView>
