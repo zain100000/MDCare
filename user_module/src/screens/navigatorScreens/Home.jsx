@@ -22,6 +22,7 @@ const Home = () => {
 
   const user = useSelector(state => state.auth.user);
 
+
   useEffect(() => {
     if (user && user.id) {
       dispatch(getUser(user.id));

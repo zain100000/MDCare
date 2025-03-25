@@ -13,6 +13,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../styles/theme';
 import {globalStyles} from '../../styles/globalStyles';
 import Button from '../../utils/customComponents/customButton/Button';
+import { useSelector } from 'react-redux';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -37,9 +38,12 @@ const SchoolDetail = () => {
     }
   };
 
+  const senderId = useSelector(state => state.auth.user?.id);
+  console.log('Redux senderId:', senderId);
   const handleChatNavigation = () => {
     navigation.navigate('SchoolChat', {
-      Id: schoolId,
+      senderId,
+      schoolId,
       schoolName: name,
       schoolImage: image,
     });
