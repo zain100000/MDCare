@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet, Dimensions, Image} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../../screens/navigatorScreens/Home';
-import Calendar from '../../screens/navigatorScreens/Calendar';
+import Events from '../../screens/navigatorScreens/Events';
 import Notification from '../../screens/navigatorScreens/Notification';
 import Setting from '../../screens/navigatorScreens/Setting';
 import {theme} from '../../styles/theme';
@@ -58,8 +58,8 @@ const BottomNavigator = () => {
       />
 
       <Tab.Screen
-        name="Calendar"
-        component={Calendar}
+        name="Event"
+        component={Events}
         options={{
           tabBarLabel: '',
           tabBarIcon: ({focused}) => (
