@@ -466,7 +466,7 @@ const Profile = () => {
 
   const user = useSelector(state => state.auth.user);
   const state = useSelector(state => state);
-  console.log('initial',state);
+  console.log('initial', state);
   const location = useSelector(state => state.location.location);
   const address = useSelector(state => state.location.address);
   const isTracking = useSelector(state => state.location.isTracking);
@@ -487,30 +487,30 @@ const Profile = () => {
     }
   }, [user]);
 
-  const handleLogout = async () => {
-    setLoading(true);
-    try {
-      const resultAction = await dispatch(logoutUser()).unwrap();
-      if (resultAction.success) {
-        setTimeout(() => {
-          setShowSuccessModal(true);
-          setTimeout(() => {
-            setShowSuccessModal(false);
-            navigation.replace('Signin');
-          }, 2000);
-        }, 2000);
-      } else {
-        console.error(
-          'Logout failed:',
-          resultAction.message || 'Unknown error.',
-        );
-      }
-    } catch (error) {
-      console.error('Error during logout:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handleLogout = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const resultAction = await dispatch(logoutUser()).unwrap();
+  //     if (resultAction.success) {
+  //       setTimeout(() => {
+  //         setShowSuccessModal(true);
+  //         setTimeout(() => {
+  //           setShowSuccessModal(false);
+  //           navigation.replace('Signin');
+  //         }, 2000);
+  //       }, 2000);
+  //     } else {
+  //       console.error(
+  //         'Logout failed:',
+  //         resultAction.message || 'Unknown error.',
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during logout:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleEditModal = () => {
     setShowEditModal(true);
@@ -541,7 +541,7 @@ const Profile = () => {
         Platform.OS === 'ios'
           ? await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
           : await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-  
+
       if (permissionStatus === RESULTS.GRANTED) {
         // Permission already granted, get location
         getLocation();
@@ -551,7 +551,7 @@ const Profile = () => {
           Platform.OS === 'ios'
             ? await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
             : await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-  
+
         if (permissionRequest === RESULTS.GRANTED) {
           getLocation(); // Permission granted, get location
         } else {
@@ -563,7 +563,6 @@ const Profile = () => {
       dispatch(toggleTracking());
     }
   };
-  
 
   const getLocation = () => {
     Geolocation.getCurrentPosition(
@@ -618,7 +617,7 @@ const Profile = () => {
 
       await dispatch(uploadProfile({userId: user.id, source})).unwrap();
       await dispatch(getUser(user.id));
-      console.log('after pic upload',user);
+      console.log('after pic upload', user);
       setShowEditModal(false);
     } catch (error) {
       if (error.message !== 'User cancelled image selection') {
@@ -738,7 +737,7 @@ const Profile = () => {
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.profileCards}>
+          {/* <View style={styles.profileCards}>
             <View style={styles.logoutContainer}>
               <ProfileScreenCard
                 title="Logout"
@@ -748,7 +747,7 @@ const Profile = () => {
                 onPressFunction={handleLogout}
               />
             </View>
-          </View>
+          </View> */}
         </ScrollView>
       </View>
 
@@ -801,16 +800,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: width * 0.04,
   },
   image: {
-    width: width * 0.45,
-    height: width * 0.45,
-    resizeMode: 'contain',
+    width: width * 0.42,
+    height: width * 0.42,
+    borderRadius: (width * 0.42) / 2, // Half of the width/height to make it fully rounded
+    resizeMode: 'cover',
   },
   nameText: {
     fontSize: width * 0.14,
-    fontFamily: theme.typography.fontFamilySemiBold,
+    fontFamily: theme.typography.MontserratfontFamilyRegular,
     color: theme.colors.primary,
     textTransform: 'uppercase',
     letterSpacing: width * 0.01,

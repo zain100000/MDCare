@@ -75,8 +75,9 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: width * 0.2,
-    height: height * 0.14,
-    top: height * 0.02,
+    width: width * 0.22,
+    height: width * 0.22,
+    top: height * 0.034,
+    borderRadius: theme.borderRadius.circle,
   },
 });
