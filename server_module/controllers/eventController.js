@@ -1,11 +1,17 @@
 const Event = require('../models/event');
-
+const { getIo } = require("../socket");
 // Create a new event
 const createEvent = async (req, res) => {
     try {
         const { name, details, date, time, venue } = req.body;
         const event = new Event({ name, details, date, time, venue });
-        await event.save();
+        const saveEvent = await event.save();
+        const io = getIo();
+        if (io) {
+            io.emit("newEvent", saveEvent); // ✅ Emit event to all clients
+          } else {
+            console.error("❌ io is not defined!");
+          }
         res.status(201).json({ success: true, message: 'Event created successfully', event });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Error creating event', error });

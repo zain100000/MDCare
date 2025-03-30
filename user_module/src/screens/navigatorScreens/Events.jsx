@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {theme} from '../../styles/theme';
 import {globalStyles} from '../../styles/globalStyles';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import SecondaryHeader from '../../utils/customComponents/customHeaders/SecondaryHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../../utils/customComponents/customInputField/InputField';
@@ -26,9 +26,15 @@ const Events = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    dispatch(getAllEvents());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getAllEvents());
+  // }, [dispatch]);
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getAllEvents());
+    }, [dispatch])
+  );
 
   const filteredEvents = (events || []).filter(item =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase()),
