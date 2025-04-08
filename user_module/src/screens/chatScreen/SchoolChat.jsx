@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView
+  ScrollView,
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -87,17 +87,23 @@ const SchoolChat = () => {
     };
   }, [schoolId, senderId]);
 
-  const onSend = async () => {
-    if (inputText && inputText.trim()) {
-      const newMessage = {
-        senderId: senderId, // Current user (should be right side)
-        receiverId: schoolId, // school (should be left side)
-        message: inputText.trim(),
+  const onSend = async (newMessages = []) => {
+    const messageToSend = newMessages[0];
+    console.log('📝 Sending message:', messageToSend);
+
+    if (messageToSend && messageToSend.text.trim()) {
+      const messagePayload = {
+        senderId: senderId,
+        receiverId: schoolId,
+        message: messageToSend.text.trim(),
       };
+
+      console.log('📦 Message payload:', messagePayload);
+
       try {
         const response = await axios.post(
           `${BASE_URL}/schoolChat/saveMessage`,
-          newMessage,
+          messagePayload,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -105,11 +111,15 @@ const SchoolChat = () => {
           },
         );
 
+        console.log('✅ Server response:', response);
+
         if (response.status === 201) {
           const responseData = response.data;
 
-          setMessages(previousMessages =>
-            GiftedChat.append(previousMessages, {
+          console.log('📥 Saved message response:', responseData);
+
+          setMessages(prevMessages =>
+            GiftedChat.append(prevMessages, {
               _id: responseData._id,
               text: responseData.message,
               createdAt: new Date(responseData.timestamp),
@@ -117,13 +127,19 @@ const SchoolChat = () => {
             }),
           );
 
-          setInputText(''); // Clear input field after sending
+          setInputText('');
+          console.log('🚀 Message sent and input cleared');
         } else {
-          console.error('Failed to send message:', response.data.error);
+          console.error(
+            '❌ Failed to send message. Response data:',
+            response.data,
+          );
         }
       } catch (error) {
-        console.error('Error sending message:', error);
+        console.error('❌ Error sending message:', error);
       }
+    } else {
+      console.log('⚠️ Empty message. Not sending.');
     }
   };
 

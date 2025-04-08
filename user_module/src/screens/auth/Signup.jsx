@@ -37,8 +37,8 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [hidePassword, setHidePassword] = useState(false);
-  const [hidePassword1, setHidePassword1] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
+  const [hidePassword1, setHidePassword1] = useState(true);
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -213,7 +213,7 @@ const Signup = () => {
                   <Ionicons
                     name={hidePassword ? 'eye-off' : 'eye'}
                     size={width * 0.06}
-                    color={theme.colors.white}
+                    color={theme.colors.primary}
                   />
                 </TouchableOpacity>
                 {passwordError ? (

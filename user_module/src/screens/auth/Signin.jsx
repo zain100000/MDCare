@@ -32,7 +32,7 @@ const Signin = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [hidePassword, setHidePassword] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);

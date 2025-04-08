@@ -10,6 +10,7 @@ import {
 import {globalStyles} from '../../../styles/globalStyles';
 import {theme} from '../../../styles/theme';
 import LinearGradient from 'react-native-linear-gradient';
+import Button from '../customButton/Button';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -61,6 +62,9 @@ const EventCard = ({
             </View>
             {venue && <Text style={styles.venueText}>Venue: {venue}</Text>}
           </View>
+          <View style={{marginTop: 20}}>
+            <Button title='Interested' />
+          </View>
         </View>
       </LinearGradient>
     </TouchableOpacity>
@@ -88,7 +92,7 @@ const styles = StyleSheet.create({
 
   image: {
     width: width * 0.3,
-    height: height * 0.18,
+    height: height * 0.28,
     resizeMode: 'cover',
     borderTopLeftRadius: theme.borderRadius.large,
     borderBottomLeftRadius: theme.borderRadius.large,
