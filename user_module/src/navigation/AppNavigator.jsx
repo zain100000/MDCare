@@ -23,6 +23,11 @@ import SchoolDetail from '../screens/schoolModule/SchoolDetail';
 import ConsultantDetail from '../screens/consultantModule/ConsultantDetail';
 import SchoolChat from '../screens/chatScreen/SchoolChat';
 import ConsultantChat from '../screens/chatScreen/ConsultantChat';
+import MathQuizGame from '../screens/gamesModule/MathQuizGame';
+import Games from '../screens/gamesModule/Games';
+import SpellingBeeGame from '../screens/gamesModule/SpellingBeeGame';
+import MemoryMatchGame from '../screens/gamesModule/MemoryMatchGame';
+import ColorSortGame from '../screens/gamesModule/ColorSortGame';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,11 +56,16 @@ const AppNavigator = () => {
         <Stack.Screen name="ConsultantDetail" component={ConsultantDetail} />
         <Stack.Screen name="Articles" component={Articles} />
         <Stack.Screen name="Videos" component={Video} />
-        {/* <Stack.Screen name="Games" component={BottomNavigator} /> */}
+        <Stack.Screen name="Games" component={Games} />
         <Stack.Screen name="Kid_Info_Form" component={KidInfoForm} />
 
         <Stack.Screen name="SchoolChat" component={SchoolChat} />
         <Stack.Screen name="ConsultantChat" component={ConsultantChat} />
+
+        <Stack.Screen name="MathQuizGame" component={MathQuizGame} />
+        <Stack.Screen name="SpellingBeeGame" component={SpellingBeeGame} />
+        <Stack.Screen name="MemoryMatchGame" component={MemoryMatchGame} />
+        <Stack.Screen name="ColorSortGame" component={ColorSortGame} />
       </Stack.Navigator>
     </>
   );
