@@ -3,6 +3,7 @@ const { isAuth } = require("../middleware/auth");
 const Waitinglist = require("../models/waitinglist");
 const User = require("../models/user");
 const crypto = require("crypto");
+const cloudinary = require("../helper/imageUpload");
 
 // Middleware for checking if the user is superAdmin
 const isSuperAdmin = (req, res, next) => {
@@ -34,6 +35,18 @@ exports.createSchool = async (req, res) => {
     if (isThisEmailInUse) {
       return res.status(400).json({ message: "Email already in use" });
     }
+    let imageUrl = null;
+    if (!!req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "schoolPics",
+        crop: "limit",
+        width: 800,
+        height: 800,
+      });
+      if (result?.secure_url) {
+        imageUrl = result.secure_url;
+      }
+    }
 
     const school = new Waitinglist({
       email,
@@ -44,6 +57,7 @@ exports.createSchool = async (req, res) => {
       specialties,
       Rating,
       phone,
+      ...(imageUrl && { pic: imageUrl }),
     });
     await school.save();
 
@@ -262,5 +276,58 @@ exports.schoolLogin = async (req, res) => {
   } catch (error) {
     console.error("Error logging in school:", error.message);
     res.status(500).json({ success: false, message: "Server error!" });
+  }
+};
+
+
+
+
+exports.updateSchoolProfile = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized access!" });
+    }
+
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const schoolIdFromToken = new mongoose.Types.ObjectId(decoded.schoolId);
+
+    const schoolIdFromRequest = req.body._id; 
+y
+    if (!schoolIdFromToken.equals(schoolIdFromRequest)) {
+      return res.status(403).json({ success: false, message: "Forbidden: School ID mismatch!" });
+    }
+
+    const school = await School.findById(schoolIdFromToken);
+    if (!school) {
+      return res.status(404).json({ success: false, message: "School not found!" });
+    }
+
+    if (school.pic) {
+      const publicId = school.pic.split("/").pop().split(".")[0]; 
+      await cloudinary.uploader.destroy(`schoolPics/${publicId}`);
+    }
+
+  
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "schoolPics", 
+      crop: "limit",
+      width: 800,
+      height: 800,
+    });
+
+    if (!result || !result.secure_url) {
+      return res.status(500).json({ success: false, message: "Cloudinary upload failed!" });
+    }
+
+
+    school.pic = result.secure_url;
+    await school.save();
+
+    res.status(200).json({ success: true, message: "School profile updated successfully!" });
+  } catch (error) {
+    console.error("Error uploading profile image:", error.message);
+    res.status(500).json({ success: false, message: "Server error, try again later!" });
   }
 };
