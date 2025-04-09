@@ -27,6 +27,10 @@ const schoolSchema = new mongoose.Schema({
     type: [Number],
     default: [], // Defaults to an empty array
   },
+  pic: {
+    type: String,
+  default: 'https://img.freepik.com/free-vector/school-building-educational-institution-college_107791-1051.jpg?t=st=1744172153~exp=1744175753~hmac=b2ae58891f585919752956411f219b47f69f41a797ebf81414ce875965ab3617&w=1060'
+  },
 });
 schoolSchema.index({ location: "2dsphere" });
 
