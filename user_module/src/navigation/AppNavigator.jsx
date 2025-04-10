@@ -28,6 +28,7 @@ import Games from '../screens/gamesModule/Games';
 import SpellingBeeGame from '../screens/gamesModule/SpellingBeeGame';
 import MemoryMatchGame from '../screens/gamesModule/MemoryMatchGame';
 import ColorSortGame from '../screens/gamesModule/ColorSortGame';
+import ArticleDetail from '../screens/articlesModule/ArticleDetail';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Consultant" component={Consultant} />
         <Stack.Screen name="ConsultantDetail" component={ConsultantDetail} />
         <Stack.Screen name="Articles" component={Articles} />
+        <Stack.Screen name="ArticleDetail" component={ArticleDetail} />
         <Stack.Screen name="Videos" component={Video} />
         <Stack.Screen name="Games" component={Games} />
         <Stack.Screen name="Kid_Info_Form" component={KidInfoForm} />

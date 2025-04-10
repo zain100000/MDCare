@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,48 +8,44 @@ import {
   Text,
   Image,
 } from 'react-native';
-import { theme } from '../../styles/theme';
-import { globalStyles } from '../../styles/globalStyles';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import {theme} from '../../styles/theme';
+import {globalStyles} from '../../styles/globalStyles';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import SecondaryHeader from '../../utils/customComponents/customHeaders/SecondaryHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../../utils/customComponents/customInputField/InputField';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllEvents } from '../../redux/slices/eventSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAllEvents} from '../../redux/slices/eventSlice';
 
-const { width, height } = Dimensions.get('screen');
+const {width, height} = Dimensions.get('screen');
 
 const Notification = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const notifications = useSelector(state => state.events.events);
-  const [searchQuery, setSearchQuery] = useState('');
 
   useFocusEffect(
     useCallback(() => {
       dispatch(getAllEvents());
-    }, [dispatch])
+    }, [dispatch]),
   );
 
-  const sortedNotifications = (notifications || [])
-    .sort((a, b) => new Date(a.date) - new Date(b.date)) 
-    .filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const sortedNotifications = (notifications || []).sort(
+    (a, b) => new Date(a.date) - new Date(b.date),
+  );
 
-  const isUpcomingEvent = (date) => {
+  const isUpcomingEvent = date => {
     return new Date(date) >= new Date();
   };
 
-  const renderNotification = ({ item }) => (
+  const renderNotification = ({item}) => (
     <View style={styles.cardContainer}>
       <Text style={styles.cardTitle}>{item.name}</Text>
 
       <View style={styles.cardContent}>
         {item.image ? (
-          <Image
-            source={{ uri: item.image }}  
-            style={styles.cardImage}
-          />
+          <Image source={{uri: item.image}} style={styles.cardImage} />
         ) : (
           <Image
             source={{
@@ -59,9 +55,14 @@ const Notification = () => {
           />
         )}
 
-
         <View style={styles.detailsContainer}>
-          <Text style={[styles.cardDate, isUpcomingEvent(item.date) ? styles.upcomingEvent : styles.pastEvent]}>
+          <Text
+            style={[
+              styles.cardDate,
+              isUpcomingEvent(item.date)
+                ? styles.upcomingEvent
+                : styles.pastEvent,
+            ]}>
             {new Date(item.date).toDateString()}
           </Text>
           <Text style={styles.cardMessage}>{item.details}</Text>
@@ -79,22 +80,6 @@ const Notification = () => {
           titleColor="#07BBC6"
           subtitleColor="#035B60"
         />
-
-        <View style={styles.searchContainer}>
-          <View style={styles.iconContainer}>
-            <Ionicons
-              name={'search'}
-              size={width * 0.05}
-              color={theme.colors.primary}
-            />
-          </View>
-          <InputField
-            placeholder="Search Notifications"
-            placeholderTextColor={theme.colors.primary}
-            backgroundColor={theme.colors.white}
-            onChangeText={setSearchQuery}
-          />
-        </View>
       </View>
 
       <View style={styles.secondaryContainer}>
@@ -102,7 +87,7 @@ const Notification = () => {
           data={sortedNotifications}
           renderItem={renderNotification}
           keyExtractor={item => item._id.toString()}
-          contentContainerStyle={{ paddingBottom: height * 0.02 }}
+          contentContainerStyle={{paddingBottom: height * 0.02}}
         />
       </View>
     </SafeAreaView>
@@ -130,7 +115,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     position: 'absolute',
     left: width * 0.04,
-    transform: [{ translateY: width * 0.12 }],
+    transform: [{translateY: width * 0.12}],
     zIndex: 8,
   },
 
@@ -140,7 +125,7 @@ const styles = StyleSheet.create({
     marginBottom: width * 0.05,
     borderRadius: 12,
     shadowColor: theme.colors.dark,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
@@ -176,7 +161,7 @@ const styles = StyleSheet.create({
   },
 
   upcomingEvent: {
-    color: 'green', 
+    color: 'green',
   },
 
   pastEvent: {

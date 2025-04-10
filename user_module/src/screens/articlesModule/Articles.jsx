@@ -41,11 +41,16 @@ const Articles = () => {
       item.content.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
+  const handleNavigateDetail = item => {
+    navigation.navigate('ArticleDetail', {article: item});
+  };
+
   const renderArticle = ({item}) => (
     <ArticleCard
       title={item.title}
       content={item.content}
       imageSource={require('../../assets/placeHolder/img_placeholder.png')}
+      onPress={() => handleNavigateDetail(item)}
     />
   );
 

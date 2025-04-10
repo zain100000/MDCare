@@ -18,7 +18,8 @@ const ArticleCard = ({title, content, imageSource, onPress}) => {
   return (
     <TouchableOpacity
       style={[globalStyles.container, styles.primaryContainer]}
-      activeOpacity={0.9}>
+      activeOpacity={0.9}
+      onPress={onPress}>
       <LinearGradient
         colors={['#AE9352', '#88835B']}
         start={{x: 0.5, y: 0}}
