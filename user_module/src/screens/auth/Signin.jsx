@@ -41,13 +41,10 @@ const Signin = () => {
   const [passwordError, setPasswordError] = useState('');
 
   useEffect(() => {
-    const hasErrors =
-      emailError ||
-      passwordError ||
-      !email ||
-      !password ||
-      setIsButtonEnabled(!hasErrors);
-  }, [emailError, passwordError]);
+    const hasErrors = emailError || passwordError || !email || !password;
+
+    setIsButtonEnabled(!hasErrors);
+  }, [email, password, emailError, passwordError]);
 
   const handleEmailChange = value => {
     setEmail(value);
@@ -60,8 +57,13 @@ const Signin = () => {
   };
 
   const handleLogin = async () => {
+    console.log('Login button pressed');
+    console.log('Email:', email);
+    console.log('Password:', password);
+
     if (isValidInput(email, password)) {
       setLoading(true);
+      console.log('Input is valid. Starting login process...');
 
       const loginData = {
         email,
@@ -69,14 +71,19 @@ const Signin = () => {
       };
 
       try {
+        console.log('Dispatching loginUser with:', loginData);
         const resultAction = await dispatch(loginUser(loginData));
+        console.log('Result action:', resultAction);
 
         if (loginUser.fulfilled.match(resultAction)) {
           const {user} = resultAction.payload;
+          console.log('Login successful:', user);
+
           setShowSuccessModal(true);
 
           setTimeout(() => {
             setShowSuccessModal(false);
+            console.log('Navigating to Main screen...');
             navigation.replace('Main');
           }, 3000);
         } else {
@@ -85,15 +92,18 @@ const Signin = () => {
               ? resultAction.payload.error || 'Login failed. Please try again.'
               : 'Unexpected response from server.';
 
+          console.error('Login failed:', errorMessage);
           setLoading(false);
-          console.error(errorMessage);
         }
       } catch (err) {
         console.error('An error occurred during login:', err);
         setLoading(false);
       } finally {
+        console.log('Login process complete. Hiding loader.');
         setLoading(false);
       }
+    } else {
+      console.warn('Invalid input. Please check email and password.');
     }
   };
 

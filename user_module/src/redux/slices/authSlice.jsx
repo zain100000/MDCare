@@ -30,7 +30,8 @@ export const loginUser = createAsyncThunk(
 
     try {
       const response = await axios.post(`${BASE_URL}/auth/sign-in`, loginData);
-
+      console.log('FULL RESPONSE:', response);
+      console.log('STATUS CODE:', response.status);
       console.log('LOGIN RESPONSE', response.data);
 
       const {success, user, token} = response.data;
@@ -39,11 +40,15 @@ export const loginUser = createAsyncThunk(
         await AsyncStorage.setItem('authToken', token);
         return {user, token};
       } else {
-        return rejectWithValue('Login failed. Please try again.');
+        console.warn('Server responded but success is false:', response.data);
+        return rejectWithValue({
+          error: response.data.message || 'Login failed. Please try again.',
+        });
       }
     } catch (error) {
-      console.error('Error during login:', error); // Log the error
-      return rejectWithValue(error.response?.data || 'An error occurred');
+      console.error('Error during login:', error);
+      const errorPayload = error.response?.data || {error: 'An error occurred'};
+      return rejectWithValue(errorPayload);
     }
   },
 );

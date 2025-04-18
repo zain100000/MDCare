@@ -10,6 +10,7 @@ import {
   Text,
   Alert,
   Platform,
+  FlatList,
 } from 'react-native';
 import {theme} from '../../styles/theme';
 import {globalStyles} from '../../styles/globalStyles';
@@ -19,9 +20,9 @@ import {useSelector, useDispatch} from 'react-redux';
 import imgPlaceHolder from '../../assets/placeHolder/default_avatar.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import InputField from '../../utils/customComponents/customInputField/InputField';
-import ProfileScreenCard from '../../utils/customComponents/customCards/ProfileScreenCard';
 import Geolocation from 'react-native-geolocation-service';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {getAllKids} from '../../redux/slices/kidSlice';
 
 import {
   updateLocation,
@@ -34,6 +35,7 @@ import CustomModal from '../../utils/customModals/CustomModal';
 import axios from 'axios';
 import CustomEditModal from '../../utils/customModals/CustomEditModal';
 import ImagePicker from 'react-native-image-crop-picker';
+import KidCard from '../../utils/customComponents/customKidCard/KidCard';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -52,11 +54,19 @@ const Profile = () => {
   const location = useSelector(state => state.location.location);
   const address = useSelector(state => state.location.address);
   const isTracking = useSelector(state => state.location.isTracking);
+  const kids = useSelector(state => state.kids.kids);
 
   useEffect(() => {
     if (user && user.id) {
       console.log('this');
       dispatch(getUser(user.id));
+      console.log('this');
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (user && user.id) {
+      dispatch(getAllKids(user.id));
       console.log('this');
     }
   }, [dispatch, user]);
@@ -153,7 +163,7 @@ const Profile = () => {
         dispatch(updateLocation({latitude, longitude}));
         try {
           const response = await axios.get(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCaCSJ0BZItSyXqBv8vpD1N4WBffJeKhLQ`,
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCxMFAnW9XaOiB_xRoULmvJMzGjCQ0x3fg`,
           );
           if (response.data.status === 'OK') {
             const address =
@@ -210,6 +220,16 @@ const Profile = () => {
       }
     }
   };
+
+  const renderKid = ({item}) => (
+    <KidCard
+      name={item.name}
+      age={item.age}
+      gender={item.gender}
+      speciality={item.speciality}
+      imageSource={require('../../assets/placeHolder/default_avatar.png')} // ✅ local image
+    />
+  );
 
   return (
     <SafeAreaView style={[globalStyles.container, styles.primaryContainer]}>
@@ -321,17 +341,15 @@ const Profile = () => {
               />
             </TouchableOpacity>
           </View>
-          {/* <View style={styles.profileCards}>
-            <View style={styles.logoutContainer}>
-              <ProfileScreenCard
-                title="Logout"
-                iconName="log-out-outline"
-                iconColor={theme.colors.primary}
-                rightIcon="chevron-forward"
-                onPressFunction={handleLogout}
-              />
-            </View>
-          </View> */}
+
+          <View style={styles.secondaryContainer}>
+            <FlatList
+              data={kids}
+              renderItem={renderKid}
+              keyExtractor={item => item._id.toString()}
+              contentContainerStyle={{paddingBottom: height * 0.02}}
+            />
+          </View>
         </ScrollView>
       </View>
 
@@ -384,6 +402,10 @@ const styles = StyleSheet.create({
   primaryContainer: {
     flex: 1,
     backgroundColor: theme.colors.white,
+  },
+  secondaryContainer: {
+    flex: 1,
+    marginTop: height * 0.01,
   },
   phoneContainer: {
     padding: height * 0.01,

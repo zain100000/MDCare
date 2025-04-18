@@ -46,7 +46,7 @@ export const getAllKids = createAsyncThunk(
       return response.data.kids;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || 'Failed to fetch maintenance requests.',
+        error.response?.data || 'Failed to fetch kids info.',
       );
     }
   },
