@@ -9,12 +9,53 @@ const initializeSocket = (server) => {
       methods: ["GET", "POST"],
     },
   });
-
+  let users = {};
   io.on("connection", (socket) => {
-    console.log(`🔌 New client connected: ${socket.id}`);
+    const callerId = socket.handshake.query?.callerId;
+    if (callerId) {
+      users[callerId] = socket.id;
+    }
+    console.log(`User connected: ${callerId}, Socket ID: ${socket.id}`);
 
+    // call event
+    socket.on("call", ({ calleeId, rtcMessage, roomId }) => {
+      if (users[calleeId]) {
+        io.to(users[calleeId]).emit("newCall", {
+          callerId,
+          rtcMessage,
+          roomId,
+        });
+      }
+    });
+
+    //answer call event
+    socket.on("answerCall", ({ callerId, rtcMessage, roomId }) => {
+      if (users[callerId]) {
+        io.to(users[callerId]).emit("callAnswered", { rtcMessage, roomId });
+      }
+    });
+
+
+    //ice event 
+    socket.on("ICEcandidate", ({ calleeId, rtcMessage }) => {
+      if (users[calleeId]) {
+        io.to(users[calleeId]).emit("ICEcandidate", { rtcMessage });
+      }
+    });
+
+    //end call event
+    socket.on("endCall", ({ calleeId, roomId }) => {
+      if (users[calleeId]) {
+        io.to(users[calleeId]).emit("callEnded", { roomId });
+      }
+    });
+
+    //
     socket.on("disconnect", () => {
-      console.log(`❌ Client disconnected: ${socket.id}`);
+      console.log(`User disconnected: ${callerId}`);
+      if (callerId) {
+        delete users[callerId];
+      }
     });
   });
 

@@ -1,7 +1,9 @@
 import React from 'react';
 import {StatusBar} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
+import Calling from '../screens/callScreens/Calling';
+import Receiving from '../screens/callScreens/Receiving';
+import InCall from '../screens/callScreens/InCall';
 // Shared Imports
 import Splash from '../screens/shared/Splash';
 import OnBoarding from '../screens/shared/OnBoarding';
@@ -66,6 +68,10 @@ const AppNavigator = () => {
         <Stack.Screen name="SpellingBeeGame" component={SpellingBeeGame} />
         <Stack.Screen name="MemoryMatchGame" component={MemoryMatchGame} />
         <Stack.Screen name="ColorSortGame" component={ColorSortGame} />
+         {/* call screen Screens */}
+         <Stack.Screen name="Calling" component={Calling} />
+        <Stack.Screen name="Receiving" component={Receiving} />
+        <Stack.Screen name="InCall" component={InCall} />
       </Stack.Navigator>
     </>
   );
