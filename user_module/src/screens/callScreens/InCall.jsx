@@ -9,8 +9,9 @@ import IconButton from '../../utils/Components/IconButton';
 import { useWebRTC } from '../../Provider/WebRTCProvider';
 
 const InCall = () => {
-  const params = useRoute();
-  const otherUserId = params.params.otherId;
+  const route = useRoute();
+  const otherUserId =  route?.params?.otherId ?? '';
+
   const {
     localStream,
     remoteStream,

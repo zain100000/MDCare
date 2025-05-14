@@ -9,7 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Receiving = () => {
   const params = useRoute();
-  const otherUserId = params.params.otherId;
+  const otherUserId = params?.params?.otherId;
   const { processAccept } = useWebRTC();
 
   console.log(params.params, 'params.params');
@@ -43,13 +43,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
+    paddingBottom: 50,
   },
   h1: {
     fontSize: 24,
     fontWeight: 'bold',
   },
   idText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   myId: {

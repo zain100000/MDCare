@@ -19,7 +19,7 @@ const {width, height} = Dimensions.get('screen');
 const ConsultantDetail = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const {consultantId, image, name, bio, phone, expertise} = route.params || {};
+  var {consultantId, image, name, bio, phone, expertise} = route.params || {};
 console.log('Consultant Detail:', route.params);
   const handleContact = () => {
     if (phone) {
@@ -51,6 +51,10 @@ console.log('Consultant Detail:', route.params);
   };
 
   const handleCallStart = () => {
+    if(consultantId === '678cc37573ad7bbaaaa324ae'){
+      consultantId = '6824198463087cf025f234e9'
+    }
+    console.log('Starting call with consultantId:', consultantId);  
     navigation.navigate('Calling', {consultantId});
   };
 

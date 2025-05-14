@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
@@ -5,17 +6,22 @@ import { useRoute, RouteProp, useFocusEffect } from '@react-navigation/native';
 import IconButton from '../../utils/Components/IconButton';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useWebRTC } from '../../Provider/WebRTCProvider';
-const Calling = ({navigation}) => {
-  const params = useRoute();
-  const otherUserId = params?.consultantId || '';
+const Calling = ( ) => {
+  const route = useRoute();
+  const otherUserId = route?.params?.consultantId || '';
 
   console.log('Calling screen params:',otherUserId);
   const { setOtherUserId, processCall, leave } = useWebRTC();
 
   useFocusEffect(
     useCallback(() => {
-      setOtherUserId(otherUserId);
-      processCall(otherUserId);
+      console.log('useFocusEffect triggered with otherUserId:', otherUserId);  // Log to check if it's called
+      if (otherUserId) {
+        setOtherUserId(otherUserId); // Set the otherUserId
+        processCall(otherUserId); // Start the call
+      } else {
+        console.error('No consultantId found.');
+      }
     }, [otherUserId])
   );
 
@@ -28,8 +34,8 @@ const Calling = ({navigation}) => {
       <View style={styles.content}>
         <IconButton
           backgroundColor="red"
-          // onPress={() => leave(true, otherUserId)}
-          onPress={() => navigation.goBack()}
+         onPress={() => leave(false, otherUserId)}
+         // onPress={() => navigation.goBack()}
           IconComponent={
             <MaterialIcons name="call-end" size={22} color={'#ffffff'} />
           }
@@ -49,13 +55,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
+    paddingBottom: 50,
   },
   h1: {
     fontSize: 24,
     fontWeight: 'bold',
   },
   idText: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   myId: {

@@ -44,12 +44,28 @@ const initializeSocket = (server) => {
     });
 
     //end call event
+    // socket.on("endCall", ({ calleeId, roomId }) => {
+    //   if (users[calleeId]) {
+    //     io.to(users[calleeId]).emit("callEnded", { roomId });
+    //   }
+    // });
     socket.on("endCall", ({ calleeId, roomId }) => {
-      if (users[calleeId]) {
-        io.to(users[calleeId]).emit("callEnded", { roomId });
+      const callerSocketId = socket.id; // Socket of the one ending the call
+      const calleeSocketId = users[calleeId];
+      console.log(`Ending call for room: ${roomId}`);
+      console.log(`Caller Socket ID: ${callerSocketId}`);
+      console.log(`Callee Socket ID: ${calleeSocketId}`);
+    
+      if (calleeSocketId) {
+        io.to(calleeSocketId).emit("callEnded", { roomId });
+      }
+    
+      // Emit back to the caller too
+      if (callerSocketId) {
+        io.to(callerSocketId).emit("callEnded", { roomId });
       }
     });
-
+    
     //
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${callerId}`);
