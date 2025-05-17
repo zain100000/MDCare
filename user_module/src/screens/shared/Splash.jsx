@@ -14,14 +14,19 @@ const Splash = () => {
 
   useEffect(() => {
     const checkSession = async () => {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      const token = await AsyncStorage.getItem('authToken');
-      console.log('Token Get', token);
+      await new Promise(resolve => setTimeout(resolve, 1500));  // Wait 2.5 seconds for the splash effect
+      
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        console.log('Token:', token);
 
-      if (token) {
-        navigation.replace('Main');
-      } else {
-        navigation.replace('OnBoard');
+        if (token) {
+          navigation.replace('Main');
+        } else {
+          navigation.replace('OnBoard');
+        }
+      } catch (error) {
+        console.error('Error checking session:', error);
       }
 
       setLoading(false);

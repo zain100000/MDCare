@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useCallback} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,15 +13,14 @@ import {useRoute} from '@react-navigation/native';
 import {theme} from '../../styles/theme';
 import {globalStyles} from '../../styles/globalStyles';
 import Button from '../../utils/customComponents/customButton/Button';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {useSelector, useDispatch} from 'react-redux';
 const {width, height} = Dimensions.get('screen');
-
 const ConsultantDetail = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const {consultantId, image, name, bio, phone, expertise} = route.params || {};
-
+  var {consultantId, image, name, bio, phone, expertise} = route.params || {};
+console.log('Consultant Detail:', route.params);
   const handleContact = () => {
     if (phone) {
       Linking.openURL(`tel:${phone}`);
@@ -31,6 +30,15 @@ const ConsultantDetail = () => {
     }
   };
 
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Screen focused. Params:', route.params);
+      // You can perform other actions here if needed, like refreshing Redux, logging, etc.
+    }, [route.params])
+  );
+  
+  
   const senderId = useSelector(state => state.auth.user?.id);
   console.log('Redux senderId:', senderId);
   const handleChatNavigation = () => {
@@ -40,6 +48,14 @@ const ConsultantDetail = () => {
       consultantName: name,
       consultantImage: image,
     });
+  };
+
+  const handleCallStart = () => {
+    if(consultantId === '678cc37573ad7bbaaaa324ae'){
+      consultantId = '6824198463087cf025f234e9'
+    }
+    console.log('Starting call with consultantId:', consultantId);  
+    navigation.navigate('Calling', {consultantId});
   };
 
   return (
@@ -71,6 +87,15 @@ const ConsultantDetail = () => {
             </View>
             <Text style={styles.orText}>or</Text>
             <Button title="Leave a message" onPress={handleChatNavigation} />
+          </View>
+          <View style={{width: '100%', alignItems: 'center',}}>
+            <View style={{width: '95%', marginBottom: 10,}}>
+              <Button
+                title="📹 Call"
+                width={'100%'}
+                onPress={handleCallStart}
+              />
+            </View>
           </View>
         </View>
       </ScrollView>

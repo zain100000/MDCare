@@ -3,8 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import RootNavigator from './src/navigation/RootNavigator';
 import { io } from 'socket.io-client';
-import EventModal from './src/utils/customModals/EventModal'; // Adjust the path as needed
+import EventModal from './src/utils/customModals/EventModal';
 import { navigate } from './src/navigation/NavigationService';
+import { requestUserPermission, subscribeToTokenRefresh } from './src/services/firebaseConfig';
 
 const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,30 +19,34 @@ const App = () => {
       setModalVisible(true);
     });
 
+    // Request permission & get token
+    requestUserPermission();
+
+    // Subscribe to token refresh and clean up on unmount
+    const unsubscribeTokenRefresh = subscribeToTokenRefresh();
+  
     return () => {
-      socket.off('newEvent'); // Clean up listener
+      socket.off('newEvent');
+      unsubscribeTokenRefresh();
     };
   }, []);
 
   return (
     <View style={{ flex: 1 }}>
-    <RootNavigator />
-
-    {/* Custom Modal to Show Event Details */}
-    <EventModal
-      visible={modalVisible}
-      onClose={() => setModalVisible(false)}
-      event={eventData}
-      primaryButtonText="OK"
-      onPrimaryButtonPress={() => setModalVisible(false)}
-      secondaryButtonText="View Event"
-      onSecondaryButtonPress={() => {
-        setModalVisible(false);
-        navigate('Event');
-        // Navigate to event details screen if needed
-      }}
-    />
-  </View>
+      <RootNavigator />
+      <EventModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        event={eventData}
+        primaryButtonText="OK"
+        onPrimaryButtonPress={() => setModalVisible(false)}
+        secondaryButtonText="View Event"
+        onSecondaryButtonPress={() => {
+          setModalVisible(false);
+          navigate('Event');
+        }}
+      />
+    </View>
   );
 };
 
