@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Text, View, StyleSheet, Platform } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -7,6 +7,7 @@ import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import inCallManager from 'react-native-incall-manager';
 import IconButton from '../../utils/Components/IconButton';
 import { useWebRTC } from '../../Provider/WebRTCProvider';
+import InCallManager from 'react-native-incall-manager';
 
 const InCall = () => {
   const route = useRoute();
@@ -33,7 +34,10 @@ const InCall = () => {
       };
     }, []),
   );
-
+  useEffect(() => {
+    InCallManager.setSpeakerphoneOn(true);
+  }, []);
+  
   console.log(remoteStream, 'REMOTE', Platform.Version);
 
   return (

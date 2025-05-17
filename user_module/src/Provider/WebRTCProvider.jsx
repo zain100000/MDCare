@@ -18,7 +18,9 @@ import RNCallKeep from 'react-native-callkeep';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 import { navigate, navigationRef } from '../navigation/NavigationService';
+import InCallManager from 'react-native-incall-manager';
 
+//const SOCKET_SERVER_URL = 'http://192.168.1.19:8000';
 const SOCKET_SERVER_URL = 'http://10.0.2.2:8000';
 const WebRTCContext = createContext(null);
 
@@ -29,6 +31,7 @@ export const WebRTCProvider = ({ children }) => {
   const peerConnection = useRef(null);
   const socket = useRef(null);
   const remoteRTCMessage = useRef(null);
+  const hasLeftCall = useRef(false);
 
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
@@ -102,68 +105,104 @@ export const WebRTCProvider = ({ children }) => {
       RNCallKeep.removeEventListener('endCall');
     };
   }, []);
-
+  
   useEffect(() => {
     if (!myId) return;
 
-    socket.current = io(SOCKET_SERVER_URL, {
-      transports: ['websocket'],
-      query: { callerId: myId },
-    });
-
-    socket.current.on('connect', () => console.log('Connected to signaling server'));
-    socket.current.on('disconnect', () => console.warn('Disconnected from server'));
-    socket.current.on('connect_error', err => console.error('Socket error:', err));
-
-    socket.current.on('callEnded', () => {
-      leave(true);
-      const currentRoute = navigationRef?.getCurrentRoute()?.name;
-      if (currentRoute === 'InCall' || currentRoute === 'Receiving') {
-        navigationRef.navigate('ConsultantDetail');
-      } else {
-        navigationRef.navigate('Receiving');
-      }
-    });
-
-    socket.current.on('newCall', async data => {
-      remoteRTCMessage.current = data.rtcMessage;
-      otherUserId.current = data.callerId;
+    async function initializeSocket() {
       try {
-        await AsyncStorage.setItem('pendingCall', data.roomId);
-        if (appState.current !== 'active') {
-          RNCallKeep.displayIncomingCall(
-            data.roomId,
-            data.callerId || 'Unknown Caller',
-            'Incoming Video Call',
-            'generic',
-            true
+        const fcmToken = await AsyncStorage.getItem('fcmToken');
+        socket.current = io(SOCKET_SERVER_URL, {
+          transports: ['websocket'],
+          query: {
+            callerId: myId,
+            fcmToken,
+          },
+        });
+
+        socket.current.on('connect', () => console.log('Connected to signaling server'));
+        socket.current.on('disconnect', () => console.warn('Disconnected from server'));
+        socket.current.on('connect_error', err => console.error('Socket error:', err));
+
+        socket.current.on('callEnded', () => {
+          leave(true);
+          const currentRoute = navigationRef?.getCurrentRoute()?.name;
+          if (currentRoute === 'InCall' || currentRoute === 'Receiving') {
+            navigationRef.navigate('Consultant');
+          } else {
+            navigationRef.navigate('Receiving');
+          }
+        });
+
+        // socket.current.on('newCall', async data => {
+        //   remoteRTCMessage.current = data.rtcMessage;
+        //   otherUserId.current = data.callerId;
+        //   try {
+        //     await AsyncStorage.setItem('pendingCall', data.roomId);
+        //     if (appState.current !== 'active') {
+        //       RNCallKeep.displayIncomingCall(
+        //         data.roomId,
+        //         data.callerId || 'Unknown Caller',
+        //         'Incoming Video Call',
+        //         'generic',
+        //         true
+        //       );
+        //     } else {
+        //       navigate('Receiving', { otherId: data.callerId });
+        //     }
+        //   } catch (err) {
+        //     console.error('Failed to handle new call:', err);
+        //   }
+        // });
+        socket.current.on('newCall', async data => {
+          remoteRTCMessage.current = data.rtcMessage;
+          otherUserId.current = data.callerId;
+          try {
+            await AsyncStorage.setItem('pendingCall', data.roomId);
+            if (appState.current !== 'active') {
+              RNCallKeep.displayIncomingCall(
+                data.roomId,                      // callUUID
+                data.callerId || 'Unknown Caller',
+                'Incoming Video Call',
+                'generic',
+                true
+              );
+            } else {
+              navigate('Receiving', { otherId: data.callerId });
+            }
+          } catch (err) {
+            console.error('Failed to handle new call:', err);
+          }
+        });
+        
+        socket.current.on('callAnswered', async data => {
+          remoteRTCMessage.current = data.rtcMessage;
+          peerConnection.current?.setRemoteDescription(
+            new RTCSessionDescription(remoteRTCMessage.current)
           );
-        } else {
-          navigate('Receiving', { otherId: data.callerId });
-        }
+          InCallManager.start({ media: 'audio' });
+          InCallManager.setSpeakerphoneOn(true);
+          navigate('InCall');
+        });
+
+        socket.current.on('ICEcandidate', data => {
+          const candidate = new RTCIceCandidate(data.rtcMessage);
+          if (peerConnection.current?.remoteDescription) {
+            peerConnection.current.addIceCandidate(candidate).catch(console.error);
+          } else {
+            iceCandidatesQueue.current.push(candidate);
+          }
+        });
       } catch (err) {
-        console.error('Failed to handle new call:', err);
+        console.error('Socket initialization error:', err);
       }
-    });
+    }
 
-    socket.current.on('callAnswered', data => {
-      remoteRTCMessage.current = data.rtcMessage;
-      peerConnection.current?.setRemoteDescription(
-        new RTCSessionDescription(remoteRTCMessage.current)
-      );
-      navigate('InCall');
-    });
+    initializeSocket();
 
-    socket.current.on('ICEcandidate', data => {
-      const candidate = new RTCIceCandidate(data.rtcMessage);
-      if (peerConnection.current?.remoteDescription) {
-        peerConnection.current.addIceCandidate(candidate).catch(console.error);
-      } else {
-        iceCandidatesQueue.current.push(candidate);
-      }
-    });
-
-    return () => socket.current?.disconnect();
+    return () => {
+      socket.current?.disconnect();
+    };
   }, [myId]);
 
   const initializePeerConnection = () => {
@@ -203,6 +242,12 @@ export const WebRTCProvider = ({ children }) => {
   const setupMediaStream = async () => {
     try {
       const stream = await mediaDevices.getUserMedia({ audio: true, video: true });
+      const videoTracks = stream.getVideoTracks();
+    if (videoTracks.length > 0) {
+      console.log('✅ Camera is open. Video tracks:', videoTracks);
+    } else {
+      console.log('❌ No video tracks found. Camera might not be open.');
+    }
       setLocalStream(stream);
       stream.getTracks().forEach(track => {
         peerConnection.current?.addTrack(track, stream);
@@ -245,24 +290,37 @@ export const WebRTCProvider = ({ children }) => {
 
   const processAccept = async roomId => {
     try {
+      if (!remoteRTCMessage.current) {
+        console.warn('No remote RTC message to process.');
+        return;
+      }
+  
+      if (peerConnection.current?.signalingState === 'stable') {
+        console.warn('Peer connection already stable. Skipping processAccept.');
+        return;
+      }
+  
       initializePeerConnection();
       await setupMediaStream();
-
+  
       await peerConnection.current.setRemoteDescription(
         new RTCSessionDescription(remoteRTCMessage.current)
       );
-
+  
       flushIceCandidates();
-
+  
       const answer = await peerConnection.current.createAnswer();
       await peerConnection.current.setLocalDescription(answer);
-
+  
       socket.current.emit('answerCall', {
         callerId: otherUserId.current,
         rtcMessage: answer,
         roomId,
       });
-
+  
+      InCallManager.start({ media: 'audio' });
+      InCallManager.setSpeakerphoneOn(true);
+  
       setTimeout(() => {
         navigate('InCall', { otherId: roomId });
       }, 500);
@@ -270,10 +328,18 @@ export const WebRTCProvider = ({ children }) => {
       console.error('processAccept error:', err);
     }
   };
+  
 
   const leave = (isSocketInitiated = false, roomId = null) => {
+    if (hasLeftCall.current) {
+      console.log('Already left the call, skipping leave()');
+      return;
+    }
+  
+    hasLeftCall.current = true;
     console.log('Leaving call');
     console.log('Emit endCall to:', otherUserId.current, 'with roomId:', roomId);
+  
   
     // Stop local tracks
     localStream?.getTracks().forEach(track => track.stop());
@@ -310,7 +376,7 @@ export const WebRTCProvider = ({ children }) => {
     otherUserId.current = null;
   
     setTimeout(() => {
-      navigationRef?.navigate('ConsultantDetail');
+      navigationRef?.navigate('Consultant');
     }, 500);
   };
   

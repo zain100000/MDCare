@@ -1,5 +1,5 @@
 const socketIo = require("socket.io");
-
+const { sendFCMMessage } = require('./services/firebaseMessaging');
 let io; // Declare io variable globally
 
 const initializeSocket = (server) => {
@@ -12,26 +12,46 @@ const initializeSocket = (server) => {
   let users = {};
   io.on("connection", (socket) => {
     const callerId = socket.handshake.query?.callerId;
+    const fcmToken = socket.handshake.query?.fcmToken;
     if (callerId) {
-      users[callerId] = socket.id;
+      users[callerId] = {
+        socketId: socket.id,
+        fcmToken,
+      };
     }
     console.log(`User connected: ${callerId}, Socket ID: ${socket.id}`);
 
     // call event
-    socket.on("call", ({ calleeId, rtcMessage, roomId }) => {
+    socket.on("call", async ({ calleeId, rtcMessage, roomId }) => {
       if (users[calleeId]) {
-        io.to(users[calleeId]).emit("newCall", {
+        io.to(users[calleeId].socketId).emit("newCall", {
           callerId,
           rtcMessage,
           roomId,
         });
+      }
+      // Send push notification via FCM
+      if (users[calleeId]?.fcmToken) {
+        try {
+          await sendFCMMessage(users[calleeId].fcmToken, {
+            title: 'Incoming Call',
+            body: `You have a call from ${callerId}`,
+            callerId,
+            roomId,
+            type: 'call',
+            rtcMessage: JSON.stringify(rtcMessage),
+          });
+          console.log('✅ FCM notification sent to:', calleeId);
+        } catch (err) {
+          console.error('❌ Error sending FCM notification:', err);
+        }
       }
     });
 
     //answer call event
     socket.on("answerCall", ({ callerId, rtcMessage, roomId }) => {
       if (users[callerId]) {
-        io.to(users[callerId]).emit("callAnswered", { rtcMessage, roomId });
+        io.to(users[callerId].socketId).emit("callAnswered", { rtcMessage, roomId });
       }
     });
 
@@ -39,8 +59,9 @@ const initializeSocket = (server) => {
     //ice event 
     socket.on("ICEcandidate", ({ calleeId, rtcMessage }) => {
       if (users[calleeId]) {
-        io.to(users[calleeId]).emit("ICEcandidate", { rtcMessage });
+        io.to(users[calleeId].socketId).emit("ICEcandidate", { rtcMessage });
       }
+
     });
 
     //end call event
@@ -50,22 +71,22 @@ const initializeSocket = (server) => {
     //   }
     // });
     socket.on("endCall", ({ calleeId, roomId }) => {
-      const callerSocketId = socket.id; // Socket of the one ending the call
-      const calleeSocketId = users[calleeId];
+      const callerSocketId = users[callerId]?.socketId;
+      const calleeSocketId = users[calleeId]?.socketId;
       console.log(`Ending call for room: ${roomId}`);
       console.log(`Caller Socket ID: ${callerSocketId}`);
       console.log(`Callee Socket ID: ${calleeSocketId}`);
-    
+
       if (calleeSocketId) {
         io.to(calleeSocketId).emit("callEnded", { roomId });
       }
-    
+
       // Emit back to the caller too
       if (callerSocketId) {
         io.to(callerSocketId).emit("callEnded", { roomId });
       }
     });
-    
+
     //
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${callerId}`);
